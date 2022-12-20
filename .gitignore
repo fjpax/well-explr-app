@@ -54,6 +54,7 @@ dist/**
 *.png
 *.pkl
 *.docx
+*.pyc
 cache-directory
 .ipynb_checkpoints
 
