@@ -1,0 +1,343 @@
+{
+    "witsml:drillReports": {
+        "@version": "1.4.0.0",
+        "@xmlns:witsml": "http://www.witsml.org/schemas/1series",
+        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        "@xsi:schemaLocation": "http://www.witsml.org/schemas/1series http://www.npd.no/schema//DDRS/1series/WITSML_drillReport_profiled_schema_phase2.xsd",
+        "witsml:documentInfo": {
+            "witsml:documentName": "Drill Report 1.2.2",
+            "witsml:owner": "IIP"
+        },
+        "witsml:drillReport": {
+            "witsml:nameWell": "NO 15/9-19 A",
+            "witsml:nameWellbore": "NO 15/9-19 A",
+            "witsml:name": "name",
+            "witsml:dTimStart": "1997-07-25T00:00:00+02:00",
+            "witsml:dTimEnd": "1997-07-26T00:00:00+02:00",
+            "witsml:versionKind": "normal",
+            "witsml:createDate": "2018-05-03T13:53:19+02:00",
+            "witsml:wellAlias": {
+                "witsml:name": "15/9-19 A",
+                "witsml:namingSystem": "NPD code"
+            },
+            "witsml:wellboreAlias": [
+                {
+                    "witsml:name": "15/9-19 A",
+                    "witsml:namingSystem": "NPD code"
+                },
+                {
+                    "witsml:name": "3145",
+                    "witsml:namingSystem": "NPD number"
+                }
+            ],
+            "witsml:wellboreInfo": {
+                "witsml:dTimSpud": "1997-07-25T00:00:00+02:00",
+                "witsml:dateDrillComplete": "1997-08-30",
+                "witsml:daysBehind": "1",
+                "witsml:operator": "Statoil",
+                "witsml:rigAlias": [
+                    {
+                        "witsml:name": "BYFORD DOLPHIN",
+                        "witsml:namingSystem": "NPD Name"
+                    },
+                    {
+                        "witsml:name": "341331",
+                        "witsml:namingSystem": "NPD code"
+                    }
+                ]
+            },
+            "witsml:statusInfo": {
+                "witsml:reportNo": "2",
+                "witsml:dTim": "1997-07-26T00:00:00+02:00",
+                "witsml:md": {
+                    "@uom": "m",
+                    "#text": "2213"
+                },
+                "witsml:tvd": {
+                    "@uom": "m",
+                    "#text": "1645"
+                },
+                "witsml:diaHole": {
+                    "@uom": "in",
+                    "#text": "8.5"
+                },
+                "witsml:dTimDiaHoleStart": "1997-07-25T00:30:00+02:00",
+                "witsml:mdDiaHoleStart": {
+                    "@uom": "m",
+                    "#text": "2202"
+                },
+                "witsml:mdKickoff": {
+                    "@uom": "m",
+                    "#text": "2178"
+                },
+                "witsml:strengthForm": {
+                    "@uom": "g/cm3",
+                    "#text": "1.73"
+                },
+                "witsml:mdStrengthForm": {
+                    "@uom": "m",
+                    "#text": "2202"
+                },
+                "witsml:tvdStrengthForm": {
+                    "@uom": "m",
+                    "#text": "1639"
+                },
+                "witsml:mdCsgLast": {
+                    "@uom": "m",
+                    "#text": "4643"
+                },
+                "witsml:presTestType": "leak off test",
+                "witsml:mdPlanned": {
+                    "@uom": "m",
+                    "#text": "-999.99"
+                },
+                "witsml:distDrill": {
+                    "@uom": "m",
+                    "#text": "6"
+                },
+                "witsml:elevKelly": {
+                    "@uom": "m",
+                    "#text": "25"
+                },
+                "witsml:wellheadElevation": {
+                    "@uom": "m",
+                    "#text": "106.5"
+                },
+                "witsml:waterDepth": {
+                    "@uom": "m",
+                    "#text": "84"
+                },
+                "witsml:sum24Hr": "FINISHED RIH WITH BAKER WINDOWMASTER WHIPSTOCK. ORIENTED & SET SAME.\nCUT WINDOW FROM 2202-2207 M. DRILLED 6 M OF FORMATION.POOH FOR\nDRILLING BHA.",
+                "witsml:forecast24Hr": "SIDETRACK HOLE.",
+                "witsml:ropCurrent": {
+                    "@uom": "m/h",
+                    "#text": "-999.99"
+                },
+                "witsml:tightWell": "0",
+                "witsml:hpht": "0",
+                "witsml:fixedRig": "false"
+            },
+            "witsml:fluid": [
+                {
+                    "witsml:type": "ULTIDRILL",
+                    "witsml:locationSample": "Active pit",
+                    "witsml:dTim": "1997-07-25T06:00:00+02:00",
+                    "witsml:md": {
+                        "@datum": "RKB",
+                        "@uom": "m",
+                        "#text": "2310"
+                    },
+                    "witsml:presBopRating": {
+                        "@uom": "bar",
+                        "#text": "999"
+                    },
+                    "witsml:mudClass": "other",
+                    "witsml:density": {
+                        "@uom": "g/cm3",
+                        "#text": "1.5"
+                    },
+                    "witsml:visFunnel": {
+                        "@uom": "s",
+                        "#text": "-999.99"
+                    },
+                    "witsml:pv": {
+                        "@uom": "mPa.s",
+                        "#text": "41"
+                    },
+                    "witsml:yp": {
+                        "@uom": "Pa",
+                        "#text": "10"
+                    }
+                },
+                {
+                    "witsml:type": "ULTIDRILL",
+                    "witsml:locationSample": "Active pit",
+                    "witsml:dTim": "1997-07-25T00:00:00+02:00",
+                    "witsml:md": {
+                        "@datum": "RKB",
+                        "@uom": "m",
+                        "#text": "2310"
+                    },
+                    "witsml:presBopRating": {
+                        "@uom": "bar",
+                        "#text": "999"
+                    },
+                    "witsml:mudClass": "other",
+                    "witsml:density": {
+                        "@uom": "g/cm3",
+                        "#text": "1.5"
+                    },
+                    "witsml:visFunnel": {
+                        "@uom": "s",
+                        "#text": "-999.99"
+                    },
+                    "witsml:pv": {
+                        "@uom": "mPa.s",
+                        "#text": "41"
+                    },
+                    "witsml:yp": {
+                        "@uom": "Pa",
+                        "#text": "10"
+                    }
+                }
+            ],
+            "witsml:porePressure": {
+                "witsml:readingKind": "estimated",
+                "witsml:equivalentMudWeight": {
+                    "@uom": "g/cm3",
+                    "#text": "1.03"
+                },
+                "witsml:dTim": "1997-07-26T00:00:00+02:00",
+                "witsml:md": {
+                    "@uom": "m",
+                    "#text": "2213"
+                }
+            },
+            "witsml:activity": [
+                {
+                    "witsml:dTimStart": "1997-07-25T00:30:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T06:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "500"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- trip",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "MU BAKER WINDOWMASTER WHIPSTOCK + MILLING ASSEMBLY & ASSOCIATED BHA. CONTINUE TIH WITH DP."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T06:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T10:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2211"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- trip",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "CONTINUED TIH WITH  WINDOWMASTER WHIPSTOCK & MILLING ASSEMBLY. TAGGED 9 5/8\" BRIDGE-PLUG AT 2211 M DPM."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T10:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T12:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2211"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- drill",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "ORIENTED WHIPSTOCK USING MWD. SET ANCHOR ON WHIPSTOCK."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T12:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T18:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2207"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- drill",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "CUT WINDOW IN 9 5/8\" CASING USING WHIPSTOCK. TOP OF WINDOW = 2202 M MD  - BOTTOM OF WINDOW = 2207 M MD. PUMPED 5 M3 HI-VIS PILL WHILE MILLING AT 2205 M."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T18:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T21:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2213"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- drill",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "DRILLED/MILLED NEW FORMATION FROM 2207 - 2213 M. PUMPED 5 M3 HI-VIS PILL WHILE DRILLING AT 2208 M."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T21:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-25T23:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2213"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- drill",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "REAMED WINDOW. AFTER APPROXIMATELY 20 TIMES, STILL UNABLE TO GO DOWN THROUGH WINDOW WITHOUT ROTATING - BASED ON USING MAXIMUM OF 12 MT WEIGHT. REAMED 5 ADDITIONAL TIMES - NOW ABLE TO SLACK-OFF & PICK-UP THROUGH WINDOW WITHOUT HAVING TO ROTATE STRING."
+                },
+                {
+                    "witsml:dTimStart": "1997-07-25T23:00:00+02:00",
+                    "witsml:dTimEnd": "1997-07-26T00:00:00+02:00",
+                    "witsml:md": {
+                        "@uom": "m",
+                        "#text": "2196"
+                    },
+                    "witsml:phase": "fixed",
+                    "witsml:proprietaryCode": "drilling -- circulating conditioning",
+                    "witsml:state": "ok",
+                    "witsml:stateDetailActivity": "success",
+                    "witsml:comments": "PUMPED 10 M3 HI-VIS PILL & CIRCULATED HOLE CLEAN AT 2000 LPM."
+                }
+            ],
+            "witsml:lithShowInfo": {
+                "witsml:dTim": "1997-07-26T00:00:00+02:00",
+                "witsml:mdTop": {
+                    "@uom": "m",
+                    "#text": "2206"
+                },
+                "witsml:mdBottom": {
+                    "@uom": "m",
+                    "#text": "-999.99"
+                },
+                "witsml:lithology": "CLAYSTONES - HORDALAND GROUP"
+            },
+            "witsml:gasReadingInfo": {
+                "witsml:dTim": "1997-07-26T00:00:00+02:00",
+                "witsml:readingType": "drilling gas peak",
+                "witsml:mdTop": {
+                    "@uom": "m",
+                    "#text": "2213"
+                },
+                "witsml:tvdTop": {
+                    "@uom": "m",
+                    "#text": "1644"
+                },
+                "witsml:gasHigh": {
+                    "@uom": "%",
+                    "#text": ".1"
+                },
+                "witsml:meth": {
+                    "@uom": "ppm",
+                    "#text": "800"
+                },
+                "witsml:eth": {
+                    "@uom": "ppm",
+                    "#text": "10"
+                },
+                "witsml:prop": {
+                    "@uom": "ppm",
+                    "#text": "-999.99"
+                },
+                "witsml:ibut": {
+                    "@uom": "ppm",
+                    "#text": "-999.99"
+                },
+                "witsml:nbut": {
+                    "@uom": "ppm",
+                    "#text": "-999.99"
+                },
+                "witsml:ipent": {
+                    "@uom": "ppm",
+                    "#text": "-999.99"
+                }
+            }
+        }
+    }
+}
