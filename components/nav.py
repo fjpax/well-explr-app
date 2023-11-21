@@ -11,7 +11,7 @@ import base64
 
 
 
-
+print(dash.page_registry, '//////')
 def my_nav_bar():
     PLOTLY_LOGO = "digiwells.png"
 
@@ -40,16 +40,16 @@ def my_nav_bar():
                             dbc.Col(html.Img(src='data:image/png;base64,{}'.format(base64.b64encode(open('/Users/2924441/Desktop/phd part 2/add_fm_data/assets/digiwells.png', 'rb').read()).decode('ascii')), height="30px")),
                             dbc.Col(dbc.NavbarBrand("Explr", className="ms-2",href='/overview')),
                             dbc.Col(dbc.DropdownMenu(
-                                        [dbc.DropdownMenuItem("Overview",href=dash.page_registry['pages.overview_pages.overview']['path'])],
+                                        [dbc.DropdownMenuItem("Overview",href='/overview')],# '/analytics'
                                         
                                         label="Overview",
                                         nav=True, className="ms-2",
-                                    ), style ={"color":"white"}),
+                                    )),
                             dbc.Col(dbc.DropdownMenu(
-                                        [dbc.DropdownMenuItem("Survey",href=dash.page_registry['pages.drilling_pages.drilling']['path']), 
-                                        dbc.DropdownMenuItem("Casings",href=dash.page_registry['pages.drilling_pages.casings']['path']),
-                                        dbc.DropdownMenuItem("Formations",href=dash.page_registry['pages.drilling_pages.formation']['path']),
-                                        dbc.DropdownMenuItem("Well Compare",href=dash.page_registry['pages.well_summary_pages.well_comparer']['path'])],
+                                        [dbc.DropdownMenuItem("Survey",href='/drilling'), 
+                                        dbc.DropdownMenuItem("Casings",href='/casings'),
+                                        dbc.DropdownMenuItem("Formations",href='/formation'),
+                                        dbc.DropdownMenuItem("Well Compare",href='/well_comparer')],
                                         label="Drilling",
                                         nav=True, className="ms-2",
                                     )),
