@@ -57,4 +57,4 @@ dist/**
 *.pyc
 cache-directory
 .ipynb_checkpoints
-
+/tests
