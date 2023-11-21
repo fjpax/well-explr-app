@@ -111,49 +111,4 @@ def viz_rop_formation(well_names):
 
 
 
-# def viz_formation_with_depth(well_names):
-#     """visualize the formation by depth
-
-#     :param _type_ well_names: _description_
-#     """
-#     for well_name in well_names:
-#         my_well = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/formation_data/'+well_name+'.csv', sep=';')
-
-#         #zip formation, and depth range
-#         assert my_well['Formation Tops'][-1:].iat[-1] =='TD'
-#         fm_depthrange_list = zip(my_well['Formation Tops'][:-1],my_well['m MD'][:-1], my_well['m MD'][1:])
-
-#         fig = go.Figure()
-
-#         # Set axes properties
-#         fig.update_xaxes(range=[0, 1])
-#         fig.update_yaxes(range=[ max(my_well['m MD']),min(my_well['m MD'])],
-#                         tickmode = 'linear',
-#                     # tick0 = 0.5,
-#                         dtick = 50)
-
-#         for formation, top_depth, both_depth in fm_depthrange_list:
-#             fig.add_hrect(y1=both_depth, y0=top_depth,
-#                             line_width=0,
-#                             fillcolor=fm_color_dict[formation],
-#                             opacity=1,annotation_text=formation,
-#                             annotation_position="inside left")
-
-#         fig.update_layout(showlegend=True,
-#                         yaxis=dict(showgrid=False),
-#                         xaxis=dict(visible=False,
-#                         showticklabels=False),
-#                         autosize=True,
-#                         width=200,
-#                         height=750,
-#                         margin=dict(
-#                             l=10,
-#                             r=10,
-#                             b=10,
-#                             t=10,
-#                             pad=4
-#                         ))
-#         fig.show()
-
-#         #return fig
 
