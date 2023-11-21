@@ -7,7 +7,7 @@ import os
 from utils.viz_wellpath import viz_wellpath_plot
 ###########
 import dash_daq as daq
-
+import plotly.graph_objects as go
 
 dash.register_page(__name__)
 
