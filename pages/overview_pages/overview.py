@@ -13,6 +13,15 @@ from npd_overall.utils.subplot_casingProf import plot_casing_and_statigraphy_3D
 import pickle
 
 from dash import no_update
+import requests
+import os
+global URL, HEADERS
+
+URL = os.environ.get("bot_url")
+HEADERS = {
+    'X-Api-Key': os.environ.get("X-Api-Key"),
+    'Content-Type': 'application/json'
+}
 
 
 from bot_assistant.utils import run_conversation, message_appender
@@ -275,16 +284,35 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
         current_resposonse = run_conversation(conversation_list)
         conversation_list = message_appender(conversation_list, {"role": "assistant", "content":str(current_resposonse['json_response'])})
 
+        
+
+        #check if current response has a function_name key
+        if current_resposonse['function_name']=='plot_the_overview_of_the_norwegian_sea':
+            print('with update')
+            conversation += f'User: {message}\n'
+            # Process the user's message and generate a response
+            response = 'Bot: \n' + str(current_resposonse['json_response'])
+            # Append the bot's response to the conversation
+            conversation += response
+            return conversation, '' , conversation_list, current_resposonse['json_response']
+        
+        if current_resposonse['function_name']=='get_answer_to_question':
+            response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
+            print('with no update: answer_the_question')
+
+            conversation += f'User: {message}\n'
+            # Process the user's message and generate a response
+            response = 'Bot: \n' + str(json.loads(response.text)['chat_response']['answer']['message'])
+            # Append the bot's response to the conversation
+            conversation += response
+
+            return conversation, '' , conversation_list, no_update
+             
         conversation += f'User: {message}\n'
         # Process the user's message and generate a response
         response = 'Bot: \n' + str(current_resposonse['json_response'])
         # Append the bot's response to the conversation
         conversation += response
-
-        #check if current response has a function_name key
-        if current_resposonse['function_name']=='plot_the_overview_of_the_norwegian_sea':
-            print('with update')
-            return conversation, '' , conversation_list, current_resposonse['json_response']
         print('with no update 1')
         return conversation, '' , conversation_list, no_update
     
