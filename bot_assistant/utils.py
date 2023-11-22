@@ -88,7 +88,7 @@ def run_conversation(messages):
                         "Well_type": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "Taken from the user query. The type of the well example:['Exploration', 'Development'].",
+                            "description": "Taken from the user query. Must be all in capital letters. example: The type of the well example:['EXPLORATION', 'DEVELOPMENT'].",
                         },
                         "Operator": {
                             "type": "array",

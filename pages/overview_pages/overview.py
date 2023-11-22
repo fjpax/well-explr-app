@@ -1,43 +1,28 @@
 import dash
 from dash import Input, Output, State, html, Dash, callback, dcc,dash_table
 import dash_bootstrap_components as dbc
-from dash_bootstrap_components._components.Container import Container
-import os
-# Import necessary libraries 
-from utils.viz_wellpath import viz_wellpath_plot
-
-import pandas as pd
 import plotly.express as px
-import dash
-from dash import dcc
-from dash import html
-
-from dash.dependencies import Input, Output, State
-#from plotly.subplots import make_subplots
-#import json
-#import numpy as np
-#%config Completer.use_jedi = False
+import pandas as pd
 import dash_bootstrap_components as dbc
 import json
-from datetime import datetime
-from flask_caching import Cache
-#import fiona
 import geojson
-
-import geopandas as gpd
-
-import plotly.graph_objects as go
-from npd_overall.utils.in_radius import if_in_distance                                                                                                           
+from datetime import datetime
+from npd_overall.utils.in_radius import if_in_distance
 from npd_overall.utils.subplot_casingProf import subplot_well_profile
 from npd_overall.utils.subplot_casingProf import plot_casing_and_statigraphy_3D
 import pickle
+
+from dash import no_update
+
+
+from bot_assistant.utils import run_conversation, message_appender
+
 ###########
 from pages.filter_all import filter_layout
-# from pages.filter_all import controls_1_filter_all
 dash.register_page(__name__)
 
 
-###########
+
 
 
 #casing design dict
@@ -119,13 +104,15 @@ for op_d in dev_df['wlbSubSea'].unique():
 
 
 
-import plotly.express as px
+
 def npd_sun(df):
     fig = px.sunburst(df, path=  ['wlbWellType', 'wlbContent','wlbPurpose', 'wlbStatus','wlbDrillingOperator'])
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     fig.update_traces(textinfo="label+percent parent")
 
     return fig
+
+
 
 table_columns = ['wlbWellboreName', 'wlbDrillingOperator','wlbTotalDepth']
 #,'wlbContent','wlbPurpose','wlbWellType', 'wlbStatus', 'wlbEntryDate','wlbProductionLicence',  'wlbNsDecDeg', 'wlbEwDesDeg','wlbSubSea']
@@ -150,8 +137,27 @@ layout = dbc.Container(
 
         html.Hr(),
         dcc.Store(id='memory-output'),
-        dbc.Row([
-                    dbc.Col(dcc.Graph(id='My_plot',style={  'height': '80vh'}) ,width = 7),#, md=8),
+        dbc.Row([  dbc.Col([
+                        # html.H1('Chatbot Assistant'),
+                        # dcc.Textarea(id='outputdivcomponent', value='', readOnly=True, style={'width': '100%', 'height': '200px'}),
+                        # html.Div([
+                        #       dcc.Input(id='botinputcomponent', type='text', placeholder='Type your message...'),
+                        #     html.Button('Send', id='bot-send-button', n_clicks=0, style={'marginLeft': '10px'})
+                        # ], style={'display': 'flex', 'alignItems': 'center'})
+                      
+                  
+                        #     ],width = 3),
+                        html.H1('Chatbot Assistant'),
+                        dcc.Store(id='conversation-list-store'),
+                        dcc.Store(id='overview-param-store'),
+                        dcc.Textarea(id='conversation', value='', readOnly=True, style={'width': '100%', 'height': '60vh'}),
+                        html.Div([
+                            dcc.Input(id='input-field', type='text', placeholder='Type your message...', style={'width': '80%', 'height': '10vh'}),
+                            html.Button('Send', id='send-button', n_clicks=0, style={'marginLeft': '10px','height': '10vh' })
+                        ], style={'display': 'flex', 'alignItems': 'center'})
+                    ], style={'width': '400px', 'margin': 'auto'}),
+                    
+                    dbc.Col(dcc.Graph(id='My_plot',style={  'height': '80vh'}) ,width = 6),#, md=8),
 
                     dbc.Col([
                           dbc.Row([html.H3('Summary'),
@@ -187,31 +193,16 @@ layout = dbc.Container(
                                         align="center",
                                             ),
 
-                        ],width = 5,style={  'height': '80vh'}),
+                        ],width = 4,style={  'height': '80vh'}),
               ],
             #align="center",
             #className="g-0" 
              ),
 
-
-
-        # html.Br(),
-        # html.Br(),
-        # html.Br(),
-        # html.Br(),
         
     ],
    fluid=True,style={'marginBottom': 100}
 )
-
-
-        
-
- 
-
-
-
-
 operators = [['ge ', '>='],
              ['le ', '<='],
              ['lt ', '<'],
@@ -248,14 +239,63 @@ def split_filter_part(filter_part):
 
 
 
+
+
+
+@callback(
+    [Output('conversation', 'value'), 
+     Output('input-field', 'value'), 
+     Output('conversation-list-store', 'data'), 
+     Output('overview-param-store', 'data')],
+
+    [Input('send-button', 'n_clicks')],
+
+    [State('input-field', 'value'), 
+     State('conversation', 'value'), 
+     State('conversation-list-store', 'data'), 
+     State('overview-param-store', 'data')]
+)
+def update_conversation(n_clicks, message, conversation, conversation_list,overview_param_store):
+    if n_clicks > 0:
+        # Append the user's message to the conversation
+        current_query = {"role": "user", "content": message}
+        
+        print('n_clicks: ',n_clicks)
+        #if conversation is already ongoing
+        if n_clicks > 1 :
+            conversation_list = message_appender(conversation_list,current_query)
+
+        #if conversation is starting
+        else:
+            #Variables:
+            prompt_message = [{"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."}]
+            conversation_list= []
+            conversation_list = message_appender(prompt_message, current_query)
+
+        current_resposonse = run_conversation(conversation_list)
+        conversation_list = message_appender(conversation_list, {"role": "assistant", "content":str(current_resposonse['json_response'])})
+
+        conversation += f'User: {message}\n'
+        # Process the user's message and generate a response
+        response = 'Bot: \n' + str(current_resposonse['json_response'])
+        # Append the bot's response to the conversation
+        conversation += response
+
+        #check if current response has a function_name key
+        if current_resposonse['function_name']=='plot_the_overview_of_the_norwegian_sea':
+            print('with update')
+            return conversation, '' , conversation_list, current_resposonse['json_response']
+        print('with no update 1')
+        return conversation, '' , conversation_list, no_update
+    
+    return conversation, None, conversation_list,no_update
+
+
+#####table callback########
 @callback(Output('table-overview', "data"),
             Input('memory-output','data'),
             Input('table-overview', "page_current"),
            Input('table-overview', "page_size"),
-            
-
-
-
 )
 
 def plot_output(filtered_well_data,page_current, page_size):
@@ -266,6 +306,34 @@ def plot_output(filtered_well_data,page_current, page_size):
 
 
 
+##################################################
+####callback based on store########
+##################################################
+# @callback([Output('memory-output', "data"),
+#             Output('My_plot','figure'),
+#             Output('My_plot_sun_npd','figure')],
+#              [Input('overview-param-store','data')]
+#              )
+# def plot_data_overview_store(overview_param_store):
+
+#     Field_Name_ss= overview_param_store['Field_Name']
+#     Well_type_chosen= overview_param_store['Well_type']
+#     Operatorss= overview_param_store['Operator']
+#     Purposes= overview_param_store['Purpose']
+#     Statuss= overview_param_store['Status']
+#     Contents= overview_param_store['Content']
+#     Subseas= None
+#     lat1= overview_param_store['latitude']
+#     lon1= overview_param_store['longitude']
+#     radius= overview_param_store['radius']
+#     search_input_text= None
+#     Color_Optionss= None
+#     sort_by= None
+ 
+
+
+#######################################################################
+
 
 
 ##################################################
@@ -274,7 +342,7 @@ def plot_output(filtered_well_data,page_current, page_size):
 @callback([Output('memory-output', "data"),
             Output('My_plot','figure'),
             Output('My_plot_sun_npd','figure')],
-             [Input('My_button','n_clicks')],
+             [Input('My_button','n_clicks'),Input('overview-param-store','data')],
              [State('Field_Names','value'),
              State('Well_type','value'),
              State('Operatorr','value'),
@@ -295,9 +363,25 @@ def plot_output(filtered_well_data,page_current, page_size):
            # State('Sizer','value'),
            #   State('Colorr','value')])
 
-def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Purposes, 
-                        Statuss,Contents,Subseas,Color_Optionss,search_input_text, lat1,
-                         lon1,radius, sort_by, filter):#,Sizes,Colors):
+def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_chosen, Operatorss, Purposes, Statuss,Contents,Subseas,Color_Optionss,search_input_text, lat1,lon1,radius, sort_by, filter):#,Sizes,Colors):#n_clicks,
+    if overview_param_store:
+        Field_Name_ss = overview_param_store.get('Field_Name', None)
+        Well_type_chosen = overview_param_store.get('Well_type', None)
+        Operatorss = overview_param_store.get('Operator', None)
+        Purposes = overview_param_store.get('Purpose', None)
+        Statuss = overview_param_store.get('Status', None)
+        Contents = overview_param_store.get('Content', None)
+        Subseas = None
+        lat1 = overview_param_store.get('latitude', None)
+        lon1 = overview_param_store.get('longitude', None)
+        radius = overview_param_store.get('radius', None)
+        search_input_text = None
+        Color_Optionss = None
+        sort_by = []
+        filter = ""
+        
+
+    print(Field_Name_ss,'2field')
     well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
    
     filtered_well_data = well_data_orig.copy()
@@ -307,13 +391,15 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
     zoom=3
     ###
     if Field_Name_ss:
+                print(filtered_well_data.shape, '///1')
+                print('field_name_ss:',Field_Name_ss)
                 field_wells=[]
                 field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['exploration'])
                 field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
                 field_wells = [item for sublist in field_wells for item in sublist]
                 filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
                 zoom=8
-
+    print(filtered_well_data.shape, '///2')
     if Well_type_chosen:
                 
                 filtered_well_data = filtered_well_data[filtered_well_data.wlbWellType.isin(Well_type_chosen)]
@@ -358,11 +444,6 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
         filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
         marker_size=None
         zoom=7
-
-    
-      
-    
-    
    
     ##geojson
     startTime = datetime.now()
@@ -376,6 +457,7 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
         Color_Optionss =['wlbContent']
   
     startTime = datetime.now()
+    print(filtered_well_data.shape, '///3')
     ################# Exploration Wells
     fig = px.scatter_mapbox(filtered_well_data, lat="wlbNsDecDeg", lon="wlbEwDesDeg", custom_data=["wlbWellboreName"], hover_name="wlbDrillingOperator", hover_data=["wlbWellboreName", "wlbPurpose"],
             color=Color_Optionss[0], size=marker_size)#height=600, width =800, 
@@ -388,8 +470,6 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
     print(filtered_well_data["wlbNsDecDeg"].mean())
     print(filtered_well_data["wlbEwDesDeg"].mean())
     fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                       
-                   
                        legend=dict(
                         x=0.85,
                         y=1,
@@ -429,7 +509,7 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
             inplace=False
         )
     
-
+    print(filtered_well_data.shape, '///4')
     return [dff.to_dict('records'),fig1,npd_sun(filtered_well_data) ]
 
 ######################

@@ -1,3 +1,9 @@
+import openai
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+openai.api_key=os.environ.get('OPENAI_API_KEY')
 
 import dash
 
@@ -5,6 +11,7 @@ import dash
 from dash import Output, State, html, Dash, dcc,Input
 #from dash import html, Dash
 import dash_bootstrap_components as dbc
+
 
 
 # Define the navbar
@@ -25,5 +32,5 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
-	app.run_server(debug=False,port=8065)
+	app.run_server(debug=False,port=8066)
 
