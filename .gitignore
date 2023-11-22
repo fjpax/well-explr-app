@@ -55,6 +55,7 @@ dist/**
 *.pkl
 *.docx
 *.pyc
+.env
 cache-directory
 .ipynb_checkpoints
 /tests
