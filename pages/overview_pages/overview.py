@@ -147,15 +147,6 @@ layout = dbc.Container(
         html.Hr(),
         dcc.Store(id='overview-dropdown-store'),
         dbc.Row([  dbc.Col([
-                        # html.H1('Chatbot Assistant'),
-                        # dcc.Textarea(id='outputdivcomponent', value='', readOnly=True, style={'width': '100%', 'height': '200px'}),
-                        # html.Div([
-                        #       dcc.Input(id='botinputcomponent', type='text', placeholder='Type your message...'),
-                        #     html.Button('Send', id='bot-send-button', n_clicks=0, style={'marginLeft': '10px'})
-                        # ], style={'display': 'flex', 'alignItems': 'center'})
-                      
-                  
-                        #     ],width = 3),
                         html.H1('Chatbot Assistant'),
                         dcc.Store(id='conversation-list-store'),
                         dcc.Store(id='overview-param-store'),
@@ -247,10 +238,6 @@ def split_filter_part(filter_part):
                 return name, operator_type[0].strip(), value
 
     return [None] * 3
-
-
-
-
 
 
 
@@ -446,8 +433,9 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
     
     return conversation, None, conversation_list,no_update , no_update
 
-
+##################################################
 #####table callback########
+##################################################
 @callback(Output('table-overview', "data"),
             Input('overview-dropdown-store','data'),
             Input('table-overview', "page_current"),
@@ -548,9 +536,6 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
 
 
 
-#######################################################################
-
-
 
 ##################################################
 ####first callback for explo wells########
@@ -595,78 +580,8 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
         raise dash.exceptions.PreventUpdate
     print('zoom:',zoom)
     filtered_well_data = pd.DataFrame.from_dict(filtered_well_data)
-
-    # print(Field_Name_ss,'2field')
-    # well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
    
-    # filtered_well_data = well_data_orig.copy()
-
-    # ###load field wells dict
-    # field_wells_with_explo_and_dev_dict= pickle.load(open("npd_overall/field_wells_with_explo_and_dev_dict.pkl", "rb"))
-    # zoom=3
-    # ###
-    # if Field_Name_ss:
-    #             print(filtered_well_data.shape, '///1')
-    #             print('field_name_ss:',Field_Name_ss)
-    #             field_wells=[]
-    #             field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['exploration'])
-    #             field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
-    #             field_wells = [item for sublist in field_wells for item in sublist]
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
-    #             zoom=8
-    # print(filtered_well_data.shape, '///2')
-    # if Well_type_chosen:
-                
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellType.isin(Well_type_chosen)]
-                
-    # if Operatorss:
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbDrillingOperator.isin(Operatorss)]
-        
-    # if Purposes:
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbPurpose.isin(Purposes)]   
-            
-    # if Statuss:
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbStatus.isin(Statuss)]
-            
-    # if Contents:
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbContent.isin(Contents)]
-            
-    # if Subseas:
-    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbSubSea.isin(Subseas)]
-            
-    # marker_size=None
-
-    
-    # if well_names_user:
-    #     #filter the filtered_well_data column wellborename with the well_names_user elements
-    #     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_names_user)]
-    #     marker_size=[18]
-         
-    # if search_input_text:
-    #     if search_input_text in list(filtered_well_data['wlbWellboreName']):
-    #         filtered_well_data = filtered_well_data[filtered_well_data['wlbWellboreName']==search_input_text]  
-    #         marker_size=[18]
-            
-
-    #     else:
-    #         field_wells=[]
-           
-    #         field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['exploration'])
-    #         field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['development'])
-    #         field_wells = [item for sublist in field_wells for item in sublist]
-    #         filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
-    #         print('num:fieldwelss:', len(field_wells))
-    #         marker_size=None
-    #     zoom=8
-          
-    # if lat1:
-    #     well_chosen = if_in_distance(radius, lon1,lat1)
-    #     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
-    #     marker_size=None
-    #     zoom=7
-    
     marker_size=None
-    # zoom=3
    
     ##geojson
     startTime = datetime.now()
@@ -736,27 +651,27 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
     return [fig1,npd_sun(filtered_well_data)]
 
 ######################
-@callback(
-    Output('My_sub_plot', 'figure'),
-    [Input('My_plot', 'selectedData')])
+# @callback(
+#     Output('My_sub_plot', 'figure'),
+#     [Input('My_plot', 'selectedData')])
     
-def callback_data_overview(selectedData):
+# def callback_data_overview(selectedData):
   
-    well_list_chosen=[]
-    for curve in selectedData.get('points'):
-        if 'customdata' in curve.keys():
-            well_list_chosen.append(curve['customdata'][0])
+#     well_list_chosen=[]
+#     for curve in selectedData.get('points'):
+#         if 'customdata' in curve.keys():
+#             well_list_chosen.append(curve['customdata'][0])
 
-    well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')      
-    list1_as_set = set(well_data_orig[well_data_orig['wlbWellType']=='EXPLORATION']['wlbWellboreName']) 
-    well_list_chosen = list1_as_set.intersection(well_list_chosen)
+#     well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')      
+#     list1_as_set = set(well_data_orig[well_data_orig['wlbWellType']=='EXPLORATION']['wlbWellboreName']) 
+#     well_list_chosen = list1_as_set.intersection(well_list_chosen)
 
-    #well_list_chosen = ['1/2-1','1/2-2','8/1-1','30/9-19 A','8/1-1','1/2-1','8/1-1']
-    fig_data_list_all, stratigraphy_data_list_all = plot_casing_and_statigraphy_3D(well_list_chosen,stratigraphy_all_dict,well_casing_design_all_dict)
-    fig = subplot_well_profile(fig_data_list_all, stratigraphy_data_list_all)
+#     #well_list_chosen = ['1/2-1','1/2-2','8/1-1','30/9-19 A','8/1-1','1/2-1','8/1-1']
+#     fig_data_list_all, stratigraphy_data_list_all = plot_casing_and_statigraphy_3D(well_list_chosen,stratigraphy_all_dict,well_casing_design_all_dict)
+#     fig = subplot_well_profile(fig_data_list_all, stratigraphy_data_list_all)
     
     
-    return fig
+#     return fig
 
 
 
