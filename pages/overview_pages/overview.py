@@ -159,6 +159,9 @@ layout = dbc.Container(
                         html.H1('Chatbot Assistant'),
                         dcc.Store(id='conversation-list-store'),
                         dcc.Store(id='overview-param-store'),
+                        dcc.Store(id='function-call-store'),
+                        dcc.Store(id='time-store'),
+                        dcc.Store(id='time-dropdown-store'),
                         dcc.Textarea(id='conversation', value='', readOnly=True, style={'width': '100%', 'height': '60vh'}),
                         html.Div([
                             dcc.Input(id='input-field', type='text', placeholder='Type your message...', style={'width': '80%', 'height': '10vh'}),
@@ -170,7 +173,7 @@ layout = dbc.Container(
 
                     dbc.Col([
                           dbc.Row([html.H3('Summary'),
-                                    dcc.Graph(id='My_plot_sun_npd',style={  'height': '40vh'})]),
+                                    dcc.Graph(id='My_plot_sun_npd',style={'height': '40vh'})]),
 
                           dbc.Row([#dbc.NavLink("Expand Table", href=dash.page_registry['pages.overview_pages.overview_table_pages']['path']),
                                    dcc.Link("Expand Table", href='/pages/overview-pages/overview-table-pages'),
@@ -255,7 +258,8 @@ def split_filter_part(filter_part):
     [Output('conversation', 'value'), 
      Output('input-field', 'value'), 
      Output('conversation-list-store', 'data'), 
-     Output('overview-param-store', 'data')],
+     Output('function-call-store', 'data'),
+     Output('time-store', 'data')],
 
     [Input('send-button', 'n_clicks')],
 
@@ -288,13 +292,137 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
 
         #check if current response has a function_name key
         if current_resposonse['function_name']=='plot_the_overview_of_the_norwegian_sea':
-            print('with update')
+            print('with update: plot_the_overview_of_the_norwegian_sea')
             conversation += f'User: {message}\n'
+            overview_param = current_resposonse['json_response']
             # Process the user's message and generate a response
-            response = 'Bot: \n' + str(current_resposonse['json_response'])
+            response = 'Bot: \n' + str(overview_param)
             # Append the bot's response to the conversation
             conversation += response
-            return conversation, '' , conversation_list, current_resposonse['json_response']
+                
+            #load the well data
+            well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
+            filtered_well_data = well_data_orig.copy()
+            ###load field wells dict
+            field_wells_with_explo_and_dev_dict= pickle.load(open("npd_overall/field_wells_with_explo_and_dev_dict.pkl", "rb"))
+            zoom=3
+
+            Field_Name_ss = overview_param.get('Field_Name', None)
+            Well_type_chosen = overview_param.get('Well_type', None)
+            Operatorss = overview_param.get('Operator', None)
+            Purposes = overview_param.get('Purpose', None)
+            Statuss = overview_param.get('Status', None)
+            Contents = overview_param.get('Content', None)
+            Subseas = None
+            lat1 = overview_param.get('latitude', None)
+            lon1 = overview_param.get('longitude', None)
+            radius = overview_param.get('radius', None)
+            well_names_user = overview_param.get('well_names', None)
+            search_input_text = None
+            Color_Optionss = None
+            sort_by = []
+            filter = ""
+
+            ###
+            if Field_Name_ss:
+                        print(filtered_well_data.shape, '///1')
+                        print('field_name_ss:',Field_Name_ss)
+                        field_wells=[]
+                        field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['exploration'])
+                        field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
+                        field_wells = [item for sublist in field_wells for item in sublist]
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
+                        zoom=8
+            print(filtered_well_data.shape, '///2')
+            if Well_type_chosen:
+                        
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbWellType.isin(Well_type_chosen)]
+                        
+            if Operatorss:
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbDrillingOperator.isin(Operatorss)]
+                
+            if Purposes:
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbPurpose.isin(Purposes)]   
+                    
+            if Statuss:
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbStatus.isin(Statuss)]
+                    
+            if Contents:
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbContent.isin(Contents)]
+                    
+            if Subseas:
+                        filtered_well_data = filtered_well_data[filtered_well_data.wlbSubSea.isin(Subseas)]
+                    
+            marker_size=None
+
+            
+            if well_names_user:
+                #filter the filtered_well_data column wellborename with the well_names_user elements
+                filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_names_user)]
+                marker_size=[18]
+                
+            if search_input_text:
+                if search_input_text in list(filtered_well_data['wlbWellboreName']):
+                    filtered_well_data = filtered_well_data[filtered_well_data['wlbWellboreName']==search_input_text]  
+                    marker_size=[18]
+                    
+
+                else:
+                    field_wells=[]
+                
+                    field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['exploration'])
+                    field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['development'])
+                    field_wells = [item for sublist in field_wells for item in sublist]
+                    filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
+                    print('num:fieldwelss:', len(field_wells))
+                    marker_size=None
+                zoom=8
+                
+            if lat1:
+                well_chosen = if_in_distance(radius, lon1,lat1)
+                filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
+                marker_size=None
+                zoom=7
+
+           
+            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now()}
+        
+        if current_resposonse['function_name']=='plot_the_wells_on_map_based_on_proximity':
+            print('with update: plot_the_wells_on_map_based_on_proximity')
+            conversation += f'User: {message}\n'
+            overview_param = current_resposonse['json_response']
+            # Process the user's message and generate a response
+            response = 'Bot: \n' + str(overview_param)
+            # Append the bot's response to the conversation
+            conversation += response
+
+            #load the well data
+            well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
+            filtered_well_data = well_data_orig.copy()
+
+            well_names_user = overview_param.get('well_names', None)
+            lat1 = overview_param.get('latitude', None)
+            lon1 = overview_param.get('longitude', None)
+            radius = overview_param.get('radius', None)
+            
+            #if lat1 or lon1 are not available but well_names_user is available, then get the lat and lon of the single well from the filtered well data
+            if not lat1 or not lon1:
+                if well_names_user:
+                    lat1 = filtered_well_data[filtered_well_data['wlbWellboreName']==well_names_user[0]]['wlbNsDecDeg'].values[0]
+                    lon1 = filtered_well_data[filtered_well_data['wlbWellboreName']==well_names_user[0]]['wlbEwDesDeg'].values[0]
+
+            #if lat1, lon1 and radius are available, then get the well names in the radius
+            if lat1 and lon1:
+                well_chosen = if_in_distance(radius, lon1,lat1)
+                #include the well_names_user in the well_chosen
+                if well_names_user:
+                     well_chosen.append(well_names_user)
+                filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
+                marker_size=None
+                zoom=7
+
+            
+            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now()}#overview_param
         
         if current_resposonse['function_name']=='get_answer_to_question':
             response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
@@ -306,7 +434,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
             # Append the bot's response to the conversation
             conversation += response
 
-            return conversation, '' , conversation_list, no_update
+            return conversation, '' , conversation_list, no_update, no_update
              
         conversation += f'User: {message}\n'
         # Process the user's message and generate a response
@@ -314,9 +442,9 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
         # Append the bot's response to the conversation
         conversation += response
         print('with no update 1')
-        return conversation, '' , conversation_list, no_update
+        return conversation, '' , conversation_list, no_update, no_update
     
-    return conversation, None, conversation_list,no_update
+    return conversation, None, conversation_list,no_update , no_update
 
 
 #####table callback########
@@ -334,43 +462,9 @@ def plot_output(filtered_well_data,page_current, page_size):
 
 
 
-##################################################
-####callback based on store########
-##################################################
-# @callback([Output('memory-output', "data"),
-#             Output('My_plot','figure'),
-#             Output('My_plot_sun_npd','figure')],
-#              [Input('overview-param-store','data')]
-#              )
-# def plot_data_overview_store(overview_param_store):
-
-#     Field_Name_ss= overview_param_store['Field_Name']
-#     Well_type_chosen= overview_param_store['Well_type']
-#     Operatorss= overview_param_store['Operator']
-#     Purposes= overview_param_store['Purpose']
-#     Statuss= overview_param_store['Status']
-#     Contents= overview_param_store['Content']
-#     Subseas= None
-#     lat1= overview_param_store['latitude']
-#     lon1= overview_param_store['longitude']
-#     radius= overview_param_store['radius']
-#     search_input_text= None
-#     Color_Optionss= None
-#     sort_by= None
- 
-
-
-#######################################################################
-
-
-
-##################################################
-####first callback for explo wells########
-##################################################
-@callback([Output('memory-output', "data"),
-            Output('My_plot','figure'),
-            Output('My_plot_sun_npd','figure')],
-             [Input('My_button','n_clicks'),Input('overview-param-store','data')],
+###callback from the click old option, the dropdown option and the search input
+@callback([Output('memory-output', "data"),Output('time-dropdown-store', "data")],
+             [Input('My_button','n_clicks')],
              [State('Field_Names','value'),
              State('Well_type','value'),
              State('Operatorr','value'),
@@ -385,31 +479,9 @@ def plot_output(filtered_well_data,page_current, page_size):
              State('input_rad','value'),
              State('table-overview', "sort_by"),
              State('table-overview', "filter_query")
-             
-            
-            ])#,
-           # State('Sizer','value'),
-           #   State('Colorr','value')])
+            ])
+def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Purposes, Statuss,Contents,Subseas,Color_Optionss, search_input_text, lat1,lon1,radius,sort_by,filter):
 
-def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_chosen, Operatorss, Purposes, Statuss,Contents,Subseas,Color_Optionss,search_input_text, lat1,lon1,radius, sort_by, filter):#,Sizes,Colors):#n_clicks,
-    if overview_param_store:
-        Field_Name_ss = overview_param_store.get('Field_Name', None)
-        Well_type_chosen = overview_param_store.get('Well_type', None)
-        Operatorss = overview_param_store.get('Operator', None)
-        Purposes = overview_param_store.get('Purpose', None)
-        Statuss = overview_param_store.get('Status', None)
-        Contents = overview_param_store.get('Content', None)
-        Subseas = None
-        lat1 = overview_param_store.get('latitude', None)
-        lon1 = overview_param_store.get('longitude', None)
-        radius = overview_param_store.get('radius', None)
-        search_input_text = None
-        Color_Optionss = None
-        sort_by = []
-        filter = ""
-        
-
-    print(Field_Name_ss,'2field')
     well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
    
     filtered_well_data = well_data_orig.copy()
@@ -449,12 +521,11 @@ def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_ch
             
     marker_size=None
 
-    
-
     if search_input_text:
         if search_input_text in list(filtered_well_data['wlbWellboreName']):
             filtered_well_data = filtered_well_data[filtered_well_data['wlbWellboreName']==search_input_text]  
             marker_size=[18]
+            
 
         else:
             field_wells=[]
@@ -472,6 +543,124 @@ def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_ch
         filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
         marker_size=None
         zoom=7
+
+    return [filtered_well_data.to_dict('records'), {'created' :datetime.now()}]
+
+
+
+#######################################################################
+
+
+
+##################################################
+####first callback for explo wells########
+##################################################
+@callback([
+            Output('My_plot','figure'),
+            Output('My_plot_sun_npd','figure')],
+             [Input('memory-output','data'),
+              Input('function-call-store','data')],
+             [
+             State('table-overview', "sort_by"),
+             State('table-overview', "filter_query"),
+             State('time-dropdown-store','data'),
+             State('time-store','data')
+             ,
+            ])#,
+           # State('Sizer','value'),
+           #   State('Colorr','value')])
+
+def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
+    print('plot_data_overview')
+    #check if time store is more recent than time dropdown store
+    if time_store and time_dropdown_store:
+        # Convert times to datetime objects
+        # time1 = datetime.strptime(time1, "%Y-%m-%d %H:%M:%S")
+        # time2 = datetime.strptime(time2, "%Y-%m-%d %H:%M:%S")
+        
+        # Compare times and return the corresponding value
+        filtered_well_data = memory_output if time_store.get('created', None) >=  time_dropdown_store.get('created', None) else function_call_store
+    elif time_store:
+        filtered_well_data = memory_output
+    elif time_store:
+        filtered_well_data =  function_call_store
+    else:
+        #raise eror saying error with time, break the process
+        print('error with time')
+        raise dash.exceptions.PreventUpdate
+    
+    filtered_well_data = pd.DataFrame.from_dict(filtered_well_data)
+    # print(Field_Name_ss,'2field')
+    # well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
+   
+    # filtered_well_data = well_data_orig.copy()
+
+    # ###load field wells dict
+    # field_wells_with_explo_and_dev_dict= pickle.load(open("npd_overall/field_wells_with_explo_and_dev_dict.pkl", "rb"))
+    # zoom=3
+    # ###
+    # if Field_Name_ss:
+    #             print(filtered_well_data.shape, '///1')
+    #             print('field_name_ss:',Field_Name_ss)
+    #             field_wells=[]
+    #             field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['exploration'])
+    #             field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
+    #             field_wells = [item for sublist in field_wells for item in sublist]
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
+    #             zoom=8
+    # print(filtered_well_data.shape, '///2')
+    # if Well_type_chosen:
+                
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellType.isin(Well_type_chosen)]
+                
+    # if Operatorss:
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbDrillingOperator.isin(Operatorss)]
+        
+    # if Purposes:
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbPurpose.isin(Purposes)]   
+            
+    # if Statuss:
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbStatus.isin(Statuss)]
+            
+    # if Contents:
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbContent.isin(Contents)]
+            
+    # if Subseas:
+    #             filtered_well_data = filtered_well_data[filtered_well_data.wlbSubSea.isin(Subseas)]
+            
+    # marker_size=None
+
+    
+    # if well_names_user:
+    #     #filter the filtered_well_data column wellborename with the well_names_user elements
+    #     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_names_user)]
+    #     marker_size=[18]
+         
+    # if search_input_text:
+    #     if search_input_text in list(filtered_well_data['wlbWellboreName']):
+    #         filtered_well_data = filtered_well_data[filtered_well_data['wlbWellboreName']==search_input_text]  
+    #         marker_size=[18]
+            
+
+    #     else:
+    #         field_wells=[]
+           
+    #         field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['exploration'])
+    #         field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['development'])
+    #         field_wells = [item for sublist in field_wells for item in sublist]
+    #         filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
+    #         print('num:fieldwelss:', len(field_wells))
+    #         marker_size=None
+    #     zoom=8
+          
+    # if lat1:
+    #     well_chosen = if_in_distance(radius, lon1,lat1)
+    #     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
+    #     marker_size=None
+    #     zoom=7
+    
+    marker_size=None
+    zoom=3
    
     ##geojson
     startTime = datetime.now()
@@ -481,8 +670,8 @@ def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_ch
     fig1 = active_licenses_figure 
     print('cpboxmap:',datetime.now() - startTime)
 
-    if not Color_Optionss:
-        Color_Optionss =['wlbContent']
+    # if not Color_Optionss:
+    Color_Optionss =['wlbContent']
   
     startTime = datetime.now()
     print(filtered_well_data.shape, '///3')
@@ -538,7 +727,7 @@ def plot_data_overview(n_clicks,overview_param_store,Field_Name_ss, Well_type_ch
         )
     
     print(filtered_well_data.shape, '///4')
-    return [dff.to_dict('records'),fig1,npd_sun(filtered_well_data) ]
+    return [fig1,npd_sun(filtered_well_data)]
 
 ######################
 @callback(

@@ -71,6 +71,36 @@ def run_conversation(messages):
                 },
             },
         },
+         {
+            "type": "function",
+            "function": {
+                "name": "plot_the_wells_on_map_based_on_proximity",
+                "description": "plot specific wells on map based on proximity. Proximity could be based on latitude, longitude, radies, and could be only a specific well or a group of wells",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "well_names": {
+                            "type": "string",#"array",
+                            "items": {"type": "string"},
+                            "description": "Taken from the user query. The well names of interest example:['1/2-1', '15/9-F11 A'].",
+                        },
+                        "latitude": {
+                            "type": "number",
+                            "description": "Taken from the user query. The latitude of the well.",
+                        },
+                        "longitude": {
+                            "type": "number",
+                            "description": "Taken from the user query. The longitude of the well.",
+                        },
+                        "radius": {
+                            "type": "number",
+                            "description": "Taken from the user query. The radius of the well.",
+                        },
+                    }
+                },
+            },
+        },
+        
         {"type": "function",
          "function": {
              "name": "plot_the_overview_of_the_norwegian_sea",
@@ -98,30 +128,35 @@ def run_conversation(messages):
                         "Purpose": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "The complete user query. The purpose of the well example:['OBSERVATION', 'APPRAISAL'].",
+                            "description": "Taken from the user query. The purpose of the well example:['OBSERVATION', 'APPRAISAL'].",
                         },
                         "Status": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "The complete user query. The status of the well. example:['PLUGGED', 'DRILLING'].",
+                            "description": "Taken from the user query. The status of the well. example:['PLUGGED', 'DRILLING'].",
                         },
                         "Content": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "The complete user query. The content of the well. example:['OIL', 'GAS', 'OIL SHOWS'].",
+                            "description": "Taken from the user query. The content of the well. example:['OIL', 'GAS', 'OIL SHOWS'].",
                         },
                 
                         "latitude": {
                             "type": "number",
-                            "description": "The complete user query. The latitude of the well.",
+                            "description": "Taken from the user query. The latitude of the well.",
                         },
                         "longitude": {
                             "type": "number",
-                            "description": "The complete user query. The longitude of the well.",
+                            "description": "Taken from the user query. The longitude of the well.",
                         },
                         "radius": {
                             "type": "number",
-                            "description": "The complete user query. The radius of the well.",
+                            "description": "Taken from the user query. The radius of the well.",
+                        },
+                        "well_names": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Taken from the user query. The well names of interest example:['1/2-1', '15/9-F11 A'].",
                         },
 
                     }
