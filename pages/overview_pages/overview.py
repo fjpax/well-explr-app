@@ -385,7 +385,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
                 zoom=7
 
            
-            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now()}
+            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom': zoom}
         
         if current_resposonse['function_name']=='plot_the_wells_on_map_based_on_proximity':
             print('with update: plot_the_wells_on_map_based_on_proximity')
@@ -410,7 +410,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
                 if well_names_user:
                     lat1 = filtered_well_data[filtered_well_data['wlbWellboreName']==well_names_user[0]]['wlbNsDecDeg'].values[0]
                     lon1 = filtered_well_data[filtered_well_data['wlbWellboreName']==well_names_user[0]]['wlbEwDesDeg'].values[0]
-
+                    zoom = 8
             #if lat1, lon1 and radius are available, then get the well names in the radius
             if lat1 and lon1:
                 well_chosen = if_in_distance(radius, lon1,lat1)
@@ -422,7 +422,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
                 zoom=7
 
             
-            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now()}#overview_param
+            return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom':zoom}#overview_param
         
         if current_resposonse['function_name']=='get_answer_to_question':
             response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
@@ -544,7 +544,7 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
         marker_size=None
         zoom=7
 
-    return [filtered_well_data.to_dict('records'), {'created' :datetime.now()}]
+    return [filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom': zoom}]
 
 
 
@@ -563,8 +563,8 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
              [
              State('table-overview', "sort_by"),
              State('table-overview', "filter_query"),
-             State('time-dropdown-store','data'),
-             State('time-store','data')
+             State('time-store','data'),
+             State('time-dropdown-store','data')
              ,
             ])#,
            # State('Sizer','value'),
@@ -572,6 +572,8 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
 
 def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
     print('plot_data_overview')
+    print('time_store',time_store, 'time_dropdown_store',time_dropdown_store)
+    zoom=3
     #check if time store is more recent than time dropdown store
     if time_store and time_dropdown_store:
         # Convert times to datetime objects
@@ -579,17 +581,21 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
         # time2 = datetime.strptime(time2, "%Y-%m-%d %H:%M:%S")
         
         # Compare times and return the corresponding value
-        filtered_well_data = memory_output if time_store.get('created', None) >=  time_dropdown_store.get('created', None) else function_call_store
-    elif time_store:
+        filtered_well_data = function_call_store if time_store.get('created', None) >=  time_dropdown_store.get('created', None) else memory_output
+        zoom = time_store.get('zoom', 3)
+    elif time_dropdown_store:
         filtered_well_data = memory_output
+        zoom = time_dropdown_store.get('zoom', 3)
     elif time_store:
         filtered_well_data =  function_call_store
+        zoom = time_store.get('zoom', 3)
     else:
         #raise eror saying error with time, break the process
         print('error with time')
         raise dash.exceptions.PreventUpdate
-    
+    print('zoom:',zoom)
     filtered_well_data = pd.DataFrame.from_dict(filtered_well_data)
+
     # print(Field_Name_ss,'2field')
     # well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
    
@@ -660,7 +666,7 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
     #     zoom=7
     
     marker_size=None
-    zoom=3
+    # zoom=3
    
     ##geojson
     startTime = datetime.now()
