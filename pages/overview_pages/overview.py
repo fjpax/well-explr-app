@@ -145,7 +145,7 @@ layout = dbc.Container(
                 )]),
 
         html.Hr(),
-        dcc.Store(id='memory-output'),
+        dcc.Store(id='overview-dropdown-store'),
         dbc.Row([  dbc.Col([
                         # html.H1('Chatbot Assistant'),
                         # dcc.Textarea(id='outputdivcomponent', value='', readOnly=True, style={'width': '100%', 'height': '200px'}),
@@ -449,7 +449,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
 
 #####table callback########
 @callback(Output('table-overview', "data"),
-            Input('memory-output','data'),
+            Input('overview-dropdown-store','data'),
             Input('table-overview', "page_current"),
            Input('table-overview', "page_size"),
 )
@@ -463,7 +463,7 @@ def plot_output(filtered_well_data,page_current, page_size):
 
 
 ###callback from the click old option, the dropdown option and the search input
-@callback([Output('memory-output', "data"),Output('time-dropdown-store', "data")],
+@callback([Output('overview-dropdown-store', "data"),Output('time-dropdown-store', "data")],
              [Input('My_button','n_clicks')],
              [State('Field_Names','value'),
              State('Well_type','value'),
@@ -558,7 +558,7 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
 @callback([
             Output('My_plot','figure'),
             Output('My_plot_sun_npd','figure')],
-             [Input('memory-output','data'),
+             [Input('overview-dropdown-store','data'),
               Input('function-call-store','data')],
              [
              State('table-overview', "sort_by"),
@@ -570,25 +570,25 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
            # State('Sizer','value'),
            #   State('Colorr','value')])
 
-def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
+def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_funccall_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
     print('plot_data_overview')
-    print('time_store',time_store, 'time_dropdown_store',time_dropdown_store)
+    print('time_funccall_store',time_funccall_store, 'time_dropdown_store',time_dropdown_store)
     zoom=3
     #check if time store is more recent than time dropdown store
-    if time_store and time_dropdown_store:
+    if time_funccall_store and time_dropdown_store:
         # Convert times to datetime objects
         # time1 = datetime.strptime(time1, "%Y-%m-%d %H:%M:%S")
         # time2 = datetime.strptime(time2, "%Y-%m-%d %H:%M:%S")
         
         # Compare times and return the corresponding value
-        filtered_well_data = function_call_store if time_store.get('created', None) >=  time_dropdown_store.get('created', None) else memory_output
-        zoom = time_store.get('zoom', 3)
+        filtered_well_data = function_call_store if time_funccall_store.get('created', None) >=  time_dropdown_store.get('created', None) else memory_output
+        zoom = time_funccall_store.get('zoom', 3)
     elif time_dropdown_store:
         filtered_well_data = memory_output
         zoom = time_dropdown_store.get('zoom', 3)
-    elif time_store:
+    elif time_funccall_store:
         filtered_well_data =  function_call_store
-        zoom = time_store.get('zoom', 3)
+        zoom = time_funccall_store.get('zoom', 3)
     else:
         #raise eror saying error with time, break the process
         print('error with time')
