@@ -37,7 +37,7 @@ def my_nav_bar():
               
                     dbc.Row(
                         [
-                            dbc.Col(html.Img(src='data:image/png;base64,{}'.format(base64.b64encode(open('/Users/2924441/Desktop/phd part 2/add_fm_data/assets/digiwells.png', 'rb').read()).decode('ascii')), height="30px")),
+                            dbc.Col(html.Img(src='data:image/png;base64,{}'.format(base64.b64encode(open('assets/digiwells.png', 'rb').read()).decode('ascii')), height="30px")),
                             dbc.Col(dbc.NavbarBrand("Explr", className="ms-2",href='/overview')),
                             dbc.Col(dbc.DropdownMenu(
                                         [dbc.DropdownMenuItem("Overview",href='/overview')],# '/analytics'
