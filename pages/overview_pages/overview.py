@@ -149,7 +149,6 @@ layout = dbc.Container(
         dbc.Row([  dbc.Col([
                         html.H1('Chatbot Assistant'),
                         dcc.Store(id='conversation-list-store'),
-                        dcc.Store(id='overview-param-store'),
                         dcc.Store(id='function-call-store'),
                         dcc.Store(id='time-store'),
                         dcc.Store(id='time-dropdown-store'),
@@ -252,10 +251,9 @@ def split_filter_part(filter_part):
 
     [State('input-field', 'value'), 
      State('conversation', 'value'), 
-     State('conversation-list-store', 'data'), 
-     State('overview-param-store', 'data')]
+     State('conversation-list-store', 'data')]
 )
-def update_conversation(n_clicks, message, conversation, conversation_list,overview_param_store):
+def update_conversation(n_clicks, message, conversation, conversation_list):
     if n_clicks > 0:
         # Append the user's message to the conversation
         current_query = {"role": "user", "content": message}
@@ -374,10 +372,11 @@ def update_conversation(n_clicks, message, conversation, conversation_list,overv
            
             return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom': zoom}
         
-        if current_resposonse['function_name']=='plot_the_wells_on_map_based_on_proximity':
+        if current_resposonse['function_name']=='plot_the_wells_on_map_based_on_radius_latitutde_longitude':
             print('with update: plot_the_wells_on_map_based_on_proximity')
             conversation += f'User: {message}\n'
             overview_param = current_resposonse['json_response']
+            print('overview_param:',overview_param)
             # Process the user's message and generate a response
             response = 'Bot: \n' + str(overview_param)
             # Append the bot's response to the conversation
@@ -479,15 +478,13 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
     zoom=3
     ###
     if Field_Name_ss:
-                print(filtered_well_data.shape, '///1')
-                print('field_name_ss:',Field_Name_ss)
                 field_wells=[]
                 field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['exploration'])
                 field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
                 field_wells = [item for sublist in field_wells for item in sublist]
                 filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
                 zoom=8
-    print(filtered_well_data.shape, '///2')
+   
     if Well_type_chosen:
                 
                 filtered_well_data = filtered_well_data[filtered_well_data.wlbWellType.isin(Well_type_chosen)]
@@ -522,7 +519,7 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
             field_wells.append(field_wells_with_explo_and_dev_dict[search_input_text]['development'])
             field_wells = [item for sublist in field_wells for item in sublist]
             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
-            print('num:fieldwelss:', len(field_wells))
+     
             marker_size=None
         zoom=8
           
@@ -556,8 +553,7 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
            #   State('Colorr','value')])
 
 def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_funccall_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
-    print('plot_data_overview')
-    print('time_funccall_store',time_funccall_store, 'time_dropdown_store',time_dropdown_store)
+
     zoom=3
     #check if time store is more recent than time dropdown store
     if time_funccall_store and time_dropdown_store:
@@ -589,13 +585,13 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
     infile = open('/Users/2924441/Desktop/phd part 2/add_fm_data/npd_overall/active_licenses_figure.pkl','rb')
     active_licenses_figure = pickle.load(infile)
     fig1 = active_licenses_figure 
-    print('cpboxmap:',datetime.now() - startTime)
+    #print('cpboxmap:',datetime.now() - startTime)
 
     # if not Color_Optionss:
     Color_Optionss =['wlbContent']
   
     startTime = datetime.now()
-    print(filtered_well_data.shape, '///3')
+    print(filtered_well_data.shape, 'filtered_well_data.shape')
     ################# Exploration Wells
     fig = px.scatter_mapbox(filtered_well_data, lat="wlbNsDecDeg", lon="wlbEwDesDeg", custom_data=["wlbWellboreName"], hover_name="wlbDrillingOperator", hover_data=["wlbWellboreName", "wlbPurpose"],
             color=Color_Optionss[0], size=marker_size)#height=600, width =800, 
@@ -605,8 +601,8 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
     
     #######
 
-    print(filtered_well_data["wlbNsDecDeg"].mean())
-    print(filtered_well_data["wlbEwDesDeg"].mean())
+    # print(filtered_well_data["wlbNsDecDeg"].mean())
+    # print(filtered_well_data["wlbEwDesDeg"].mean())
     fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                        legend=dict(
                         x=0.85,
@@ -615,8 +611,7 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
                         font=dict(
                         size=12)))#)  , zoom=2, center = {"lat": filtered_well_data["wlbNsDecDeg"].mean()+5, "lon": filtered_well_data["wlbEwDesDeg"].mean()+5})
     fig1.update_mapboxes(zoom=zoom, center = {"lat": filtered_well_data["wlbNsDecDeg"].mean(), "lon": filtered_well_data["wlbEwDesDeg"].mean()})
-    print('center:',filtered_well_data["wlbNsDecDeg"].mean())
-    print('scatter:',datetime.now() - startTime)
+    # print('center:',filtered_well_data["wlbNsDecDeg"].mean())
 
     ###############
     #table##############
@@ -647,7 +642,7 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
             inplace=False
         )
     
-    print(filtered_well_data.shape, '///4')
+
     return [fig1,npd_sun(filtered_well_data)]
 
 ######################
