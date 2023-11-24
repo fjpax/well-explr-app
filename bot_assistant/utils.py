@@ -31,30 +31,6 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
 
 def run_conversation(messages):
     tools = [
-        {
-            "type": "function",
-            "function": {
-                "name": "get_current_weather",
-                "description": "Get the current weather in a given location",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA",
-                        },
-                        "unit": {"type": "string", "enum": ["celsius", "fahrenheit"],
-                                 "description": "calculates the name of the unit of the temperature (example: “celsius”) when provided a unit of temperature."},
-
-
-                        "day": {"type": "string", 
-                                "description": "Calculates the day of the week (example: “Wednesday”) when provided."},
-                    },
-                    "required": ["location"],
-                },
-            },
-        }
-        ,
          {
             "type": "function",
             "function": {
@@ -74,8 +50,8 @@ def run_conversation(messages):
          {
             "type": "function",
             "function": {
-                "name": "plot_the_wells_on_map_based_on_proximity",
-                "description": "plot specific wells on map based on proximity. Proximity could be based on latitude, longitude, radies, and could be only a specific well or a group of wells",
+                "name": "plot_the_wells_on_map_based_on_radius_latitutde_longitude",
+                "description": "plot the wells on map based on the radius distance from a specific well.Distance could be based on latitude, longitude, radius, and could be only a specific well or a group of wells. Sample: plot the wells that are within 30km distance from well 1/2-1. sample: what which wells are within 10km of latitutde and longitude 58.45, 2.45",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -94,7 +70,7 @@ def run_conversation(messages):
                         },
                         "radius": {
                             "type": "number",
-                            "description": "Taken from the user query. The radius of the well.",
+                            "description": "Taken from the user query. The radius of the sorrounding wells. This must be converted to kilometers or km. example: 10 km. ",
                         },
                     }
                 },
@@ -151,7 +127,7 @@ def run_conversation(messages):
                         },
                         "radius": {
                             "type": "number",
-                            "description": "Taken from the user query. The radius of the well.",
+                            "description": "Taken from the user query. The radius of the sorrounding wells. This must be converted to kilometers or km. example: 10 km.",
                         },
                         "well_names": {
                             "type": "array",
