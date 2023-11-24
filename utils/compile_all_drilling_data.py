@@ -3,7 +3,8 @@ import os
 import pandas as pd
 import numpy as np
 import sys
-sys.path.insert(1, '/Users/2924441/Desktop/phd part 2/add_fm_data')
+# sys.path.insert(1, '/Users/2924441/Desktop/phd part 2/add_fm_data')
+sys.path.insert(1)
 
 def get_the_bit_size_from_name(x):
     position_ =  x.rfind('_')
@@ -55,5 +56,5 @@ def compile_all_drilling_data(dir_drilling_data, destination_drilling_data):
 
 
 if __name__ == "__main__":
-        compile_all_drilling_data(dir_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/aker_bp_data/drilling_data', destination_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_data')
-        compile_all_drilling_data(dir_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/volve/drilling_data', destination_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_data')         
+        compile_all_drilling_data(dir_drilling_data='aker_bp_data/drilling_data', destination_drilling_data='all_drill_data')
+        compile_all_drilling_data(dir_drilling_data='volve/drilling_data', destination_drilling_data='all_drill_data')         

@@ -431,7 +431,7 @@ def plot_data_overview(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Pur
     ##geojson
     startTime = datetime.now()
 
-    infile = open('/Users/2924441/Desktop/phd part 2/add_fm_data/npd_overall/active_licenses_figure.pkl','rb')
+    infile = open('npd_overall/active_licenses_figure.pkl','rb')
     active_licenses_figure = pickle.load(infile)
     #fig1 = dataframe()
     fig1 = active_licenses_figure 

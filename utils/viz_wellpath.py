@@ -32,12 +32,12 @@ def viz_wellpath_plot(well_names, show_dogleg=False,show_incidents=True):
     annotations = []
     data_concat_all = pd.DataFrame()
     for well_name in well_names:
-        df = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_survey_csv/' + well_name + '.csv', sep=',')
+        df = pd.read_csv('all_survey_csv/' + well_name + '.csv', sep=',')
         annons = True
         if annons:
             try:
                 df_annon = pd.read_csv(
-                    '/Users/2924441/Desktop/phd part 2/add_fm_data/operation_csv/' + well_name + '.csv', sep=';')
+                    'operation_csv/' + well_name + '.csv', sep=';')
                 data_concat_all, df = survey_interpolator_for_annotations(df, df_annon, data_concat_all)
             except:
                 pass
@@ -220,7 +220,7 @@ def viz_wellpath_plot(well_names, show_dogleg=False,show_incidents=True):
         data = data + [trace0]
 
     #concat an empty operation csv just in case all chosen wells does not contain an operation csv
-    data_concat_all = pd.concat([data_concat_all ,pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/operation_csv/blank_operation.csv', sep=';')],
+    data_concat_all = pd.concat([data_concat_all ,pd.read_csv('operation_csv/blank_operation.csv', sep=';')],
                                 ignore_index = True,
                                 sort = False).sort_values('MD(m RKB)')
 

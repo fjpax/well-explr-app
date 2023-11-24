@@ -34,7 +34,7 @@ def convert_survey_txt_to_csv(filepath,well_name,csv_directory):
 if __name__ == "__main__":
     # assign directory
     directory_txt = '/Users/2924441/Desktop/equinor volve azure/survey'
-    directory_csv ='/Users/2924441/Desktop/phd part 2/add_fm_data/volve/survey_csv'
+    directory_csv ='volve/survey_csv'
     # iterate over files in
     # that directory
     for well_name in os.listdir(directory_txt):

@@ -8,7 +8,7 @@ import xml.etree.ElementTree as et
 import plotly.express as px
 import pandas as pd
 def daily_report_sun(well_name):
-    df= pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/volve/daily_report/'+well_name+'.csv')
+    df= pd.read_csv('volve/daily_report/'+well_name+'.csv')
     fig = px.sunburst(df, path=['State', 'Operation'], values='Duraton_hours')
     fig.update_layout(margin={"r":0.1,"t":0.1,"l":0.1,"b":0.1})
     fig.update_traces(textinfo="label+percent parent + value")
@@ -124,7 +124,7 @@ def get_operations(well):
     df['Duraton_hours'] = df['Duration'].map(convert_duration_hour)
 
     os.chdir('../')
-    df.to_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/volve/daily_report/'+well+'.csv')
+    df.to_csv('volve/daily_report/'+well+'.csv')
     return df
 
 

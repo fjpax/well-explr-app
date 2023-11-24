@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import sys
-sys.path.insert(1, '/Users/2924441/Desktop/phd part 2/add_fm_data')
-
+# sys.path.insert(1, '/Users/2924441/Desktop/phd part 2/add_fm_data')
+sys.path.insert(1)
 
 import os
 
@@ -19,12 +19,12 @@ def filter_fm_is_in_drilling_data(x):
     return name
 
 def add_formation_data(dir_drilling_data, dir_fm_data, dir_final_ddata_with_fm):
-    list_of_drilling_data_with_fm = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
+    list_of_drilling_data_with_fm = os.listdir('all_drill_with_fm_csv')
     try:
         list_of_drilling_data_with_fm.remove('.DS_Store')
     except:
         pass
-    #list_of_fm = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm')
+  
     list_of_fm = os.listdir(dir_fm_data)
 
     try:
@@ -89,12 +89,10 @@ def add_formation_data(dir_drilling_data, dir_fm_data, dir_final_ddata_with_fm):
 
 
 if __name__ == "__main__":
-        # add_formation_data(dir_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/aker_bp_data/drilling_data', 
-        #                     dir_fm_data='/Users/2924441/Desktop/phd part 2/add_fm_data/aker_bp_data/formation_data', 
-        #                     dir_final_ddata_with_fm='/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
+       
 
-        add_formation_data(dir_drilling_data='/Users/2924441/Desktop/phd part 2/add_fm_data/volve/drilling_data', 
-                            dir_fm_data='/Users/2924441/Desktop/phd part 2/add_fm_data/volve/formation_data', 
-                            dir_final_ddata_with_fm='/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
+        add_formation_data(dir_drilling_data='volve/drilling_data', 
+                            dir_fm_data='volve/formation_data', 
+                            dir_final_ddata_with_fm='all_drill_with_fm_csv')
 
 

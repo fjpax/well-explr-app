@@ -38,7 +38,7 @@ def compile_suvey_data(dir_sources, compiled_dir):
                 new_df = convert_utm_to_lat_lon(src_file_path)
                 new_df.to_csv(comp_file_path, sep=',')
 if __name__ == "__main__":
-    compile_suvey_data(['/Users/2924441/Desktop/phd part 2/add_fm_data/aker_bp_data/survey',
-                        '/Users/2924441/Desktop/phd part 2/add_fm_data/volve/survey_csv'], 
+    compile_suvey_data(['aker_bp_data/survey',
+                        'volve/survey_csv'], 
 
-                        '/Users/2924441/Desktop/phd part 2/add_fm_data/all_survey_csv')
+                        'all_survey_csv')

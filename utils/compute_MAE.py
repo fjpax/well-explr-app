@@ -38,4 +38,4 @@ def computeMechanicalSpecificEnergy(directory_of_drilling_data):
 
 
 if __name__ == '__main__':
-    computeMechanicalSpecificEnergy('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')   
+    computeMechanicalSpecificEnergy('all_drill_with_fm_csv')   

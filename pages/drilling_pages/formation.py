@@ -10,7 +10,7 @@ dash.register_page(__name__)
 import os
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-# drilling_data = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv/25_4-K-7 AY1H.csv',sep=',',dtype={'hole_size': float,'Well_name':str}) 
+
        
 # drilling_data = drilling_data.groupby(['Well_name', 'formation'], as_index = False).agg(
 #                 {'HoleDepth(m)': ['mean', 'min', 'max'],'Time Averaged ROP m/h':['mean']})
@@ -30,7 +30,7 @@ import dash_bootstrap_components as dbc
 ###########
 from utils.ave_ROP_Depth import viz_averop_formation
 from utils.viz_formation import viz_rop_formation
-#xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
+
 xx = os.listdir('all_fm')
 xx = os.listdir('all_fm_withoutaker')
 

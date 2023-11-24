@@ -28,7 +28,7 @@ import json
 #                 ]
 # fm_color_dict = dict(zip(formation_lists, color_lists[:len(formation_lists)]))
 # fm_color_dict
-f = open('/Users/2924441/Desktop/phd part 2/add_fm_data/fm_color_dict.json')
+f = open('fm_color_dict.json')
 fm_color_dict = json.load(f)
  
 
@@ -37,7 +37,7 @@ def viz_formation_as_add_hrect(well_name, fig, column_num):
 
     :param _type_ well_names: _description_
     """
-    my_well = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm/'+well_name+'.csv', sep=';')
+    my_well = pd.read_csv('all_fm/'+well_name+'.csv', sep=';')
 
     #zip formation, and depth range
     my_well= my_well[my_well['Formation Tops'].notna()]
@@ -63,7 +63,7 @@ def viz_rop_formation(well_names):
     max_depth =[]
     min_depth =[]
     for i, well_name in enumerate(well_names,1):
-        drilling_data = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv/'+well_name+'.csv',dtype={'hole_size': float,'Well_name':str}) 
+        drilling_data = pd.read_csv('all_drill_with_fm_csv/'+well_name+'.csv',dtype={'hole_size': float,'Well_name':str}) 
 
         fig.add_trace(go.Scatter(x=drilling_data['Time Averaged ROP m/h'], y=drilling_data['HoleDepth(m)'], name=well_name),
                   row=1, col=i*2)

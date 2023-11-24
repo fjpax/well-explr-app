@@ -17,7 +17,7 @@ def viz_averop_formation(well_names:list,formation='all'):
     if formation =='all':
         for i,well in enumerate(well_names):
 
-            drilling_data = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv/'+well+'.csv',sep=',',dtype={'hole_size': float,'Well_name':str}) 
+            drilling_data = pd.read_csv('all_drill_with_fm_csv/'+well+'.csv',sep=',',dtype={'hole_size': float,'Well_name':str}) 
        
             drilling_data = drilling_data.groupby(['Well_name', 'formation'], as_index = False).agg(
                 {'HoleDepth(m)': ['mean', 'min', 'max'],'Time Averaged ROP m/h':['mean']})

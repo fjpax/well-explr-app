@@ -48,7 +48,7 @@ def get_color_formation_dict(directory_all_fm):
         json.dump(fm_color_dict, outfile)
     
 if __name__ == '__main__':
-    directory_all_fm = '/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm'
+    directory_all_fm = 'all_fm'
 	    
     get_formation_list(directory_all_fm)
     get_color_formation_dict(directory_all_fm)
