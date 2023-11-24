@@ -582,7 +582,7 @@ def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_
     ##geojson
     startTime = datetime.now()
 
-    infile = open('/Users/2924441/Desktop/phd part 2/add_fm_data/npd_overall/active_licenses_figure.pkl','rb')
+    infile = open('npd_overall/active_licenses_figure.pkl','rb')
     active_licenses_figure = pickle.load(infile)
     fig1 = active_licenses_figure 
     #print('cpboxmap:',datetime.now() - startTime)

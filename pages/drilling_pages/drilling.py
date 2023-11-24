@@ -13,8 +13,8 @@ dash.register_page(__name__)
 
 
 ###########
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_survey_csv')
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_suervey_withoutaker')
+xx = os.listdir('all_survey_csv')
+xx = os.listdir('all_suervey_withoutaker')
 
 try:
     xx.remove('.DS_Store')

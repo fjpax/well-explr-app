@@ -13,7 +13,7 @@ dash.register_page(__name__)
 
 import pickle
 
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_suervey_withoutaker')
+xx = os.listdir('all_suervey_withoutaker')
 
 try:
     xx.remove('.DS_Store')
@@ -329,7 +329,7 @@ def well_comparer_plot_data( well_comparer1, well_comparer2):
         print(well_comparer1, well_comparer2)
 
 
-        all_info_dict= pickle.load(open("/Users/2924441/Desktop/phd part 2/add_fm_data/npd_overall/dev_wells_info.pkl", "rb"))
+        all_info_dict= pickle.load(open("npd_overall/dev_wells_info.pkl", "rb"))
         print(all_info_dict[well_comparer1]['Type'])
         print(all_info_dict[well_comparer1]['Purpose'])
      

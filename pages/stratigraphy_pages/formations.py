@@ -20,7 +20,7 @@ from utils.ave_ROP_Depth import viz_averop_formation
 
 import os
 #xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm')
+xx = os.listdir('all_fm')
 try:
     xx.remove('.DS_Store')
 except:

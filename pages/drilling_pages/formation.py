@@ -31,8 +31,8 @@ import dash_bootstrap_components as dbc
 from utils.ave_ROP_Depth import viz_averop_formation
 from utils.viz_formation import viz_rop_formation
 #xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv')
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm')
-xx = os.listdir('/Users/2924441/Desktop/phd part 2/add_fm_data/all_fm_withoutaker')
+xx = os.listdir('all_fm')
+xx = os.listdir('all_fm_withoutaker')
 
 try:
     xx.remove('.DS_Store')
@@ -250,7 +250,7 @@ def update_table_drilling_strat(n_clicks, sort_by, filter, well_name_chosen):
     print('tableeeeee',well_name_chosen)
     dff = pd.DataFrame()
     for well_name in  well_name_chosen:
-        df = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv'+'/'+well_name+'.csv', sep=',')
+        df = pd.read_csv('all_drill_with_fm_csv'+'/'+well_name+'.csv', sep=',')
         dff = pd.concat([dff, df],
                                 ignore_index = True,
                                 sort = False)
@@ -301,7 +301,7 @@ def func_drilling_strat(n_clicks,well_name_chosen):
 
     dff = pd.DataFrame()
     for well_name in  well_name_chosen:
-        df = pd.read_csv('/Users/2924441/Desktop/phd part 2/add_fm_data/all_drill_with_fm_csv'+'/'+well_name+'.csv', sep=',')
+        df = pd.read_csv('all_drill_with_fm_csv'+'/'+well_name+'.csv', sep=',')
         dff = pd.concat([dff, df],
                                 ignore_index = True,
                                 sort = False)
