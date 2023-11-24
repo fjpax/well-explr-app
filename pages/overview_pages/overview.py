@@ -411,12 +411,27 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom':zoom}#overview_param
             
             if current_resposonse['function_name']=='get_answer_to_question':
-                response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
                 print('with no update: answer_the_question')
-
+                max_attempts = 3
+                attempt = 0
                 conversation += f'User: {message}\n'
-                # Process the user's message and generate a response
-                response = 'Bot: \n' + str(json.loads(response.text)['chat_response']['answer']['message'])
+
+                while attempt < max_attempts:
+                    response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
+                    
+                    if response.status_code == 504:  # Gateway Timeout
+                        print(f'Response 504 (Gateway Timeout), retrying... (attempt {attempt+1})')
+                        attempt += 1
+                    else:
+                        # continuation of normal execution, process the response...
+                        # Process the user's message and generate a response
+                        response = 'Bot: \n' + str(json.loads(response.text)['chat_response']['answer']['message'])
+                        break  
+                    
+                    if attempt == max_attempts:
+                        print(f'Request failed after {attempt} attempts due to repeated 504 responses')
+                        response = 'Request failed after {attempt} attempts due to repeated 504 responses'
+
                 # Append the bot's response to the conversation
                 conversation += response
 
