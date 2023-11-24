@@ -20,6 +20,13 @@ def haversine(lon1, lat1, lon2, lat2):
 
     return c * r
 def if_in_distance(radius, lon1,lat1):
+    """_summary_
+
+    :param float radius: kilometers
+    :param _type_ lon1: _description_
+    :param _type_ lat1: _description_
+    :return _type_: _description_
+    """
     in_distance_list=[]
     for i in range(len(well_data_orig)):
         for  lon2, lat2 in [well_data_orig.iloc[i][["wlbEwDesDeg","wlbNsDecDeg"]].values]:
