@@ -11,10 +11,12 @@ import base64
 
 
 
-print(dash.page_registry, '//////')
+print('page_registry: ',dash.page_registry, '//////')
+
 def my_nav_bar():
     PLOTLY_LOGO = "digiwells.png"
-
+    print('page_registry: ',dash.page_registry['pages.stratigraphy_pages.formations']['path'], '//////')
+    print('page_registry: ',dash.page_registry['pages.Users.2924441.Desktop.phd part 2.add_fm_data.pages.well_summary_pages.well_comparer']['path'], '//////')
     search_bar = dbc.Row(
         [
             dbc.Col(dbc.Input(type="search", placeholder="Search")),
@@ -49,7 +51,7 @@ def my_nav_bar():
                                         [dbc.DropdownMenuItem("Survey",href='/drilling'), 
                                         dbc.DropdownMenuItem("Casings",href='/casings'),
                                         dbc.DropdownMenuItem("Formations",href='/formation'),
-                                        dbc.DropdownMenuItem("Well Compare",href='/well_comparer')],
+                                        dbc.DropdownMenuItem("Well Compare",href='/well-comparer')],
                                         label="Drilling",
                                         nav=True, className="ms-2",
                                     )),
@@ -65,7 +67,7 @@ def my_nav_bar():
                                     )),
                                     #,href=dash.page_registry['pages.Stratigraphy_page.formations']['path']
                             dbc.Col(dbc.DropdownMenu(
-                                        [dbc.DropdownMenuItem("Formations and ROP", href =dash.page_registry['pages.stratigraphy_pages.formations']['path']), 
+                                        [dbc.DropdownMenuItem("Formations and ROP", href ='/formations'), 
                                         dbc.DropdownMenuItem("Item 2")],
                                         label="Stratigraphy",
                                         nav=True, className="ms-2",
