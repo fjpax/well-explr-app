@@ -412,7 +412,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
             
             if current_resposonse['function_name']=='get_answer_to_question':
                 print('with no update: answer_the_question')
-                max_attempts = 3
+                max_attempts = 2
                 attempt = 0
                 conversation += f'User: {message}\n'
 
