@@ -60,3 +60,4 @@ cache-directory
 .ipynb_checkpoints
 /tests
 .env
+scratch.py
