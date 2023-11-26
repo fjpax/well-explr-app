@@ -322,7 +322,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                             field_wells.append(field_wells_with_explo_and_dev_dict[Field_Name_ss[0]]['development'])
                             field_wells = [item for sublist in field_wells for item in sublist]
                             filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
-                            zoom=8
+                            zoom=10
                 print(filtered_well_data.shape, '///2')
                 if Well_type_chosen:
                             
@@ -366,13 +366,13 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                         filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(field_wells)]
                         print('num:fieldwelss:', len(field_wells))
                         marker_size=None
-                    zoom=8
+                    zoom=9
                     
                 if lat1:
                     well_chosen = if_in_distance(radius, lon1,lat1)
                     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
                     marker_size=None
-                    zoom=7
+                    zoom=9
 
 
                 summary_response = summarize_dataframe(filtered_well_data, message)
@@ -389,11 +389,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 print('with update: plot_the_wells_on_map_based_on_proximity')
                 conversation += f'User: {message}\n'
                 overview_param = current_resposonse['json_response']
-                print('overview_param:',overview_param)
-                # Process the user's message and generate a response
-                response = 'Bot: \n' + str(overview_param)
-                # Append the bot's response to the conversation
-                conversation += response
+                
 
                 #load the well data
                 well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
@@ -419,6 +415,14 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                     filtered_well_data = filtered_well_data[filtered_well_data.wlbWellboreName.isin(well_chosen)]
                     marker_size=None
                     zoom=7
+
+                print('overview_param:',overview_param)
+                summary_response = summarize_dataframe(filtered_well_data, message)
+                
+                # Process the user's message and generate a response
+                response = 'Bot: \n' + str(summary_response)
+                # Append the bot's response to the conversation
+                conversation += response
 
                 
                 return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom':zoom}#overview_param
