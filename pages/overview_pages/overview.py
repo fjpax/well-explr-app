@@ -11,7 +11,7 @@ from npd_overall.utils.in_radius import if_in_distance
 from npd_overall.utils.subplot_casingProf import subplot_well_profile
 from npd_overall.utils.subplot_casingProf import plot_casing_and_statigraphy_3D
 import pickle
-
+from bot_assistant.overview_summarizer import summarize_dataframe
 from dash import no_update
 import requests
 import os
@@ -254,6 +254,14 @@ def split_filter_part(filter_part):
      State('conversation-list-store', 'data')]
 )
 def update_conversation(n_clicks, message, conversation, conversation_list):
+    """updates the store containing that triggers the updating the graph
+
+    :param _type_ n_clicks: _description_
+    :param _type_ message: _description_
+    :param _type_ conversation: _description_
+    :param _type_ conversation_list: _description_
+    :return _type_: _description_
+    """
     if n_clicks > 0:
         # Append the user's message to the conversation
         current_query = {"role": "user", "content": message}
@@ -280,10 +288,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 print('with update: plot_the_overview_of_the_norwegian_sea')
                 conversation += f'User: {message}\n'
                 overview_param = current_resposonse['json_response']
-                # Process the user's message and generate a response
-                response = 'Bot: \n' + str(overview_param)
-                # Append the bot's response to the conversation
-                conversation += response
+
                     
                 #load the well data
                 well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
@@ -369,6 +374,14 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                     marker_size=None
                     zoom=7
 
+
+                summary_response = summarize_dataframe(filtered_well_data, message)
+                
+                # Process the user's message and generate a response
+                response = 'Bot: \n' + str(summary_response)
+                # Append the bot's response to the conversation
+                conversation += response
+
             
                 return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom': zoom}
             
@@ -450,7 +463,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
             # Handle other unexpected exceptions
             # You might want to log the exception message for debugging purposes
             print(f"An unexpected error occurred: {e}")
-            
+
     return conversation, None, conversation_list,no_update , no_update
 
 ##################################################
