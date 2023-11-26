@@ -9,7 +9,7 @@ def summarize_dataframe(df, user_query):
     normalized_counts = {column: (df[column].value_counts(normalize=True) * 100).round(2) for column in columns}
     data_string = str(normalized_counts)
 
-    instruction = "Given the data containing value counts as percentages for each column in a DataFrame, please provide a brief summary highlighting the most significant findings in a list format. Focus on key trends, dominant values, or notable disparities in the data across different columns.  Adjust your summary based on the user query."
+    instruction = "Given the data containing value counts as percentages for each column in a DataFrame, please provide a brief summary highlighting the most significant findings in a list format. Include some number results for easy reading. Focus on key trends, dominant values, or notable disparities in the data across different columns.  Adjust your summary based on the user query."
     message ="User query:" + user_query+ "\n\n"+ "This is data:\n\n" + data_string
     prompt_message = [{"role": "system", "content": instruction}, {"role": "assistant", "content": message}]
 
