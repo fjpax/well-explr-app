@@ -152,7 +152,7 @@ layout = dbc.Container(
                         dcc.Store(id='function-call-store'),
                         dcc.Store(id='time-store'),
                         dcc.Store(id='time-dropdown-store'),
-                        dcc.Textarea(id='conversation', value='', readOnly=True, style={'width': '100%', 'height': '60vh'}),
+                        dcc.Markdown(id='conversation',  style={'width': '100%', 'height': '60vh'}),#readOnly=True,value='', 
                         html.Div([
                             dcc.Input(id='input-field', type='text', placeholder='Type your message...', style={'width': '80%', 'height': '10vh'}),
                             html.Button('Send', id='send-button', n_clicks=0, style={'marginLeft': '10px','height': '10vh' })
@@ -241,7 +241,7 @@ def split_filter_part(filter_part):
 
 
 @callback(
-    [Output('conversation', 'value'), 
+    [Output('conversation', 'children'), 
      Output('input-field', 'value'), 
      Output('conversation-list-store', 'data'), 
      Output('function-call-store', 'data'),
@@ -250,7 +250,7 @@ def split_filter_part(filter_part):
     [Input('send-button', 'n_clicks')],
 
     [State('input-field', 'value'), 
-     State('conversation', 'value'), 
+     State('conversation', 'children'), 
      State('conversation-list-store', 'data')]
 )
 def update_conversation(n_clicks, message, conversation, conversation_list):
@@ -281,12 +281,14 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
         current_resposonse = run_conversation(conversation_list)
         conversation_list = message_appender(conversation_list, {"role": "assistant", "content":str(current_resposonse['json_response'])})
 
+        if not conversation:
+            conversation = ''
         #check if current response has a function_name key
         try: 
             #check if current response has a function_name key
             if current_resposonse['function_name']=='plot_the_overview_of_the_norwegian_sea':
                 print('with update: plot_the_overview_of_the_norwegian_sea')
-                conversation += f'User: {message}\n'
+                conversation += f'**You:** {message}\n\n'
                 overview_param = current_resposonse['json_response']
 
                     
@@ -376,9 +378,8 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
 
 
                 summary_response = summarize_dataframe(filtered_well_data, message)
-                
                 # Process the user's message and generate a response
-                response = 'Bot: \n' + str(summary_response)
+                response = '**Bot:** \n' + str(summary_response) + '[^1](https://factpages.npd.no/)' + '\n\n'
                 # Append the bot's response to the conversation
                 conversation += response
 
@@ -387,7 +388,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
             
             if current_resposonse['function_name']=='plot_the_wells_on_map_based_on_radius_latitutde_longitude':
                 print('with update: plot_the_wells_on_map_based_on_proximity')
-                conversation += f'User: {message}\n'
+                conversation += f'**You:** {message}\n\n'
                 overview_param = current_resposonse['json_response']
                 
 
@@ -420,7 +421,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 summary_response = summarize_dataframe(filtered_well_data, message)
                 
                 # Process the user's message and generate a response
-                response = 'Bot: \n' + str(summary_response)
+                response = '**Bot:** \n' + str(summary_response) + '\n\n'
                 # Append the bot's response to the conversation
                 conversation += response
 
@@ -431,7 +432,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 print('with no update: answer_the_question')
                 max_attempts = 2
                 attempt = 0
-                conversation += f'User: {message}\n'
+                conversation += f'**You:** {message}\n\n'
 
                 while attempt < max_attempts:
                     response = requests.post(URL, headers=HEADERS, data=json.dumps({"message": message}))
@@ -442,7 +443,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                     else:
                         # continuation of normal execution, process the response...
                         # Process the user's message and generate a response
-                        response = 'Bot: \n' + str(json.loads(response.text)['chat_response']['answer']['message'])
+                        response = '**Bot:** \n' + str(json.loads(response.text)['chat_response']['answer']['message']) + '\n\n'
                         break  
                     
                     if attempt == max_attempts:
@@ -455,9 +456,9 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 return conversation, '' , conversation_list, no_update, no_update
             
         except KeyError:
-            conversation += f'User: {message}\n'
+            conversation += f'**You:** {message}\n'
             # Process the user's message and generate a response
-            response = 'Bot: \n' + str(current_resposonse['json_response']['content'])
+            response = '**Bot:** \n' + str(current_resposonse['json_response']['content']) + '\n'
             # Append the bot's response to the conversation
             conversation += response
             print('with no update 1')
