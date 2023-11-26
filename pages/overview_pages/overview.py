@@ -437,7 +437,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
 
                 return conversation, '' , conversation_list, no_update, no_update
             
-        except:
+        except KeyError:
             conversation += f'User: {message}\n'
             # Process the user's message and generate a response
             response = 'Bot: \n' + str(current_resposonse['json_response']['content'])
@@ -445,7 +445,12 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
             conversation += response
             print('with no update 1')
             return conversation, '' , conversation_list, no_update, no_update
-    
+
+        except Exception as e:
+            # Handle other unexpected exceptions
+            # You might want to log the exception message for debugging purposes
+            print(f"An unexpected error occurred: {e}")
+            
     return conversation, None, conversation_list,no_update , no_update
 
 ##################################################
@@ -484,6 +489,25 @@ def plot_output(filtered_well_data,page_current, page_size):
              State('table-overview', "filter_query")
             ])
 def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, Operatorss, Purposes, Statuss,Contents,Subseas,Color_Optionss, search_input_text, lat1,lon1,radius,sort_by,filter):
+    """callback for generating dataframe from the dropdowns overview page
+
+    :param _type_ n_clicks: _description_
+    :param _type_ Field_Name_ss: _description_
+    :param _type_ Well_type_chosen: _description_
+    :param _type_ Operatorss: _description_
+    :param _type_ Purposes: _description_
+    :param _type_ Statuss: _description_
+    :param _type_ Contents: _description_
+    :param _type_ Subseas: _description_
+    :param _type_ Color_Optionss: _description_
+    :param _type_ search_input_text: _description_
+    :param _type_ lat1: _description_
+    :param _type_ lon1: _description_
+    :param _type_ radius: _description_
+    :param _type_ sort_by: _description_
+    :param _type_ filter: _description_
+    :return _type_: _description_
+    """
 
     well_data_orig = pd.read_csv('npd_overall/Explo_and_Dev_concat_wells.csv')
    
@@ -568,15 +592,19 @@ def drop_down_overview_filtered_data(n_clicks,Field_Name_ss, Well_type_chosen, O
            # State('Sizer','value'),
            #   State('Colorr','value')])
 
-def plot_data_overview(memory_output,function_call_store, sort_by, filter, time_funccall_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
+def plot_data_overview(memory_output, function_call_store, sort_by, filter, time_funccall_store, time_dropdown_store):#,Sizes,Colors):#n_clicks,
+    """callback for generating the map and sunburst figure when dcc.stores are updated
+
+    :param _type_ memory_output: _description_
+    :param _type_ Sizes: _description_
+    :param _type_ Colors: _description_
+    :raises dash.exceptions.PreventUpdate: _description_
+    :return _type_: _description_
+    """
 
     zoom=3
     #check if time store is more recent than time dropdown store
     if time_funccall_store and time_dropdown_store:
-        # Convert times to datetime objects
-        # time1 = datetime.strptime(time1, "%Y-%m-%d %H:%M:%S")
-        # time2 = datetime.strptime(time2, "%Y-%m-%d %H:%M:%S")
-        
         # Compare times and return the corresponding value
         filtered_well_data = function_call_store if time_funccall_store.get('created', None) >=  time_dropdown_store.get('created', None) else memory_output
         zoom = time_funccall_store.get('zoom', 3)
