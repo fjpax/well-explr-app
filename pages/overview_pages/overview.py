@@ -11,7 +11,7 @@ from npd_overall.utils.in_radius import if_in_distance
 from npd_overall.utils.subplot_casingProf import subplot_well_profile
 from npd_overall.utils.subplot_casingProf import plot_casing_and_statigraphy_3D
 import pickle
-from bot_assistant.overview_summarizer import summarize_dataframe
+from bot_assistant.overview_summarizer import summarize_dataframe, summarize_any_dataframe
 from dash import no_update
 import requests
 import os
@@ -251,9 +251,10 @@ def split_filter_part(filter_part):
 
     [State('input-field', 'value'), 
      State('conversation', 'children'), 
-     State('conversation-list-store', 'data')]
+     State('conversation-list-store', 'data'),
+     State('function-call-store', 'data')]
 )
-def update_conversation(n_clicks, message, conversation, conversation_list):
+def update_conversation(n_clicks, message, conversation, conversation_list, current_plot_data:dict):
     """updates the store containing that triggers the updating the graph
 
     :param _type_ n_clicks: _description_
@@ -428,6 +429,34 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 
                 return conversation, '' , conversation_list, filtered_well_data.to_dict('records'), {'created' :datetime.now(), 'zoom':zoom}#overview_param
             
+            if current_resposonse['function_name']=='use_current_plot_data':
+                print('with no update: use_current_plot_data')
+                
+                conversation += f'**You:** {message}\n\n'
+                overview_param = current_resposonse['json_response']
+
+                if current_plot_data:
+                    filtered_well_data = pd.DataFrame.from_dict(current_plot_data)
+                    #zoom = current_plot_data.get('zoom', 3)
+                else:
+                     #raise error that no data is available
+                    print('error with data availability')
+                     
+
+                print('overview_param:',overview_param)
+                summary_response = summarize_any_dataframe(filtered_well_data, message)
+                
+                # Process the user's message and generate a response
+                response = '**Bot:** \n' + str(summary_response) + '[^1](https://factpages.npd.no/)' + '\n\n'
+                # Append the bot's response to the conversation
+                conversation += response
+
+                
+                return conversation, '' , conversation_list, no_update, no_update
+
+
+
+
             if current_resposonse['function_name']=='get_answer_to_question':
                 print('with no update: answer_the_question')
                 max_attempts = 2
