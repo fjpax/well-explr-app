@@ -47,11 +47,29 @@ def run_conversation(messages):
                 },
             },
         },
+
+        {
+            "type": "function",
+            "function": {
+                "name": "use_current_plot_data",
+                "description": "Using the current plot data, answer the question truthfully. Be concise and to the point.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The complete user query",
+                        }
+                    }
+                },
+            },
+        },
+
          {
             "type": "function",
             "function": {
                 "name": "plot_the_wells_on_map_based_on_radius_latitutde_longitude",
-                "description": "plot the wells on map based on the radius distance from a specific well.Distance could be based on latitude, longitude, radius, and could be only a specific well or a group of wells. Sample: plot the wells that are within 30km distance from well 1/2-1. sample: what which wells are within 10km of latitutde and longitude 58.45, 2.45",
+                "description": "Plot the wells on map based on the radius distance from a specific well. Distance could be based on latitude, longitude, radius, and could be only a specific well or a group of wells. Sample: plot the wells that are within 30km distance from well 1/2-1. sample: what which wells are within 10km of latitutde and longitude 58.45, 2.45",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -80,7 +98,7 @@ def run_conversation(messages):
         {"type": "function",
          "function": {
              "name": "plot_the_overview_of_the_norwegian_sea",
-             "description": "plot the overview of the norwegian sea",
+             "description": "Plot the wells in norwegian sea based on specific filters. This could be based on the well type, field name, operator, and purpose. Sample: plot the overview of the norwegian sea based on the well type exploration. Sample: plot the overview of the norwegian sea based on the field name grane. Sample: Plot the wells in the Alvheim field.",
                 "parameters": {
                     "type": "object",
                     "properties": {
