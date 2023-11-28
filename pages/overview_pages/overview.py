@@ -421,7 +421,7 @@ def update_conversation(n_clicks, message, conversation, conversation_list):
                 summary_response = summarize_dataframe(filtered_well_data, message)
                 
                 # Process the user's message and generate a response
-                response = '**Bot:** \n' + str(summary_response) + '\n\n'
+                response = '**Bot:** \n' + str(summary_response) + '[^1](https://factpages.npd.no/)' + '\n\n'
                 # Append the bot's response to the conversation
                 conversation += response
 
