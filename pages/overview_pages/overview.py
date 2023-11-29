@@ -152,7 +152,7 @@ layout = dbc.Container(
                         dcc.Store(id='function-call-store'),
                         dcc.Store(id='time-store'),
                         dcc.Store(id='time-dropdown-store'),
-                        dcc.Markdown(id='conversation',  style={'width': '100%', 'height': '60vh'}),#readOnly=True,value='', 
+                        dcc.Markdown(id='conversation',  style={'width': '100%', 'height': '60vh', 'overflow': 'scroll'}),#readOnly=True,value='', 
                         html.Div([
                             # dcc.Input(id='input-field', type='text', placeholder='Type your message...', style={'width': '80%', 'height': '10vh'}),
                             dcc.Textarea(id='input-field',  placeholder='Type your message...', style={'width': '80%', 'height': '10vh'}),
