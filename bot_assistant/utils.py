@@ -52,7 +52,7 @@ def run_conversation(messages):
             "type": "function",
             "function": {
                 "name": "use_current_plot_data",
-                "description": "Using the current plot data, answer the question truthfully. Be concise and to the point.",
+                "description": "Using the current plotted data, answer the question truthfully.",
                 "parameters": {
                     "type": "object",
                     "properties": {
