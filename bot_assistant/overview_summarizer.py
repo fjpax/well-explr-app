@@ -3,7 +3,7 @@ import openai
 import os
 openai.api_key=os.environ.get('OPENAI_API_KEY')
 def summarize_dataframe(df, user_query):
-    GPT_MODEL = "gpt-3.5-turbo-1106"  # Replace with your desired model
+    GPT_MODEL = "gpt-4-turbo-2024-04-09"  # Replace with your desired model
     
     columns = ['wlbDrillingOperator', 'wlbPurpose', 'wlbStatus', 'wlbContent', 'wlbWellType']
     normalized_counts = {column: (df[column].value_counts(normalize=True) * 100).round(2) for column in columns}
@@ -26,7 +26,7 @@ def summarize_dataframe(df, user_query):
     return response.choices[0].message['content']
 
 def summarize_any_dataframe(df, user_query):
-    GPT_MODEL = "gpt-3.5-turbo-1106"  # Replace with your desired model
+    GPT_MODEL = "gpt-4-turbo-2024-04-09"  # Replace with your desired model
     
     columns = df.columns
     #normalized_counts = {column: (df[column].value_counts(normalize=True) * 100).round(2) for column in columns}
