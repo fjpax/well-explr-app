@@ -16,7 +16,7 @@ print('page_registry: ',dash.page_registry, '//////')
 def my_nav_bar():
     PLOTLY_LOGO = "digiwells.png"
     print('page_registry: ',dash.page_registry['pages.stratigraphy_pages.formations']['path'], '//////')
-    print('page_registry: ',dash.page_registry['pages.Users.2924441.Desktop.phd part 2.add_fm_data.pages.well_summary_pages.well_comparer']['path'], '//////')
+    print('page_registry: ',dash.page_registry['pages.well_summary_pages.well_comparer']['path'], '//////')
     search_bar = dbc.Row(
         [
             dbc.Col(dbc.Input(type="search", placeholder="Search")),
